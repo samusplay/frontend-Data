@@ -24,11 +24,19 @@ Este repositorio contiene el frontend de la Plataforma Analítica Territorial, d
 
 ## Configuración del Proyecto
 
-### Variables de Entorno
-Crea un archivo `.env.local` con la siguiente variable:
+### Variables de Entorno (IMPORTANTE)
+
+Debido a restricciones en el entorno, el archivo `.env.local` no se puede generar automáticamente. Por favor, **créalo manualmente** en la raíz del proyecto (`frontend-Data/`) con el siguiente contenido:
+
+1. Crea un archivo llamado `.env.local`.
+2. Pega el siguiente contenido dentro:
 ```env
+# URL del API Gateway (BFF)
 NEXT_PUBLIC_API_GATEWAY_URL=http://localhost:8000/api/v1
 ```
+
+> [!CAUTION]
+> Sin este archivo, las llamadas al API fallarán al usar el `baseURL` por defecto. Es indispensable para la comunicación con el Gateway.
 
 ### Comandos Útiles
 ```bash
