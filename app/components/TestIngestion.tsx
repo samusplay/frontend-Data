@@ -21,12 +21,12 @@ export default function TestIngestion() {
             if (respuesta.error) {
                 //mandamos un toats rojo
                 toast.error(respuesta.error, {
-                    style: { background: '#3f3f46', color: '#fff' }
+                    style: { background: '#fff', color: '#ef4444', border: '1px solid #fee2e2' }
                 });
             } else if (respuesta.data) {
                 //si sale exito
                 toast.success('!dato guardado correctamente', {
-                    style: { background: '#3f3f46', color: '#10b981' }
+                    style: { background: '#fff', color: '#10b981', border: '1px solid #d1fae5' }
                 });
                 //limpiamos input
                 setTexto("");
@@ -37,8 +37,8 @@ export default function TestIngestion() {
         }
     });
     return (
-        <div className="w-full max-w-md p-6 bg-zinc-900 border border-zinc-800 rounded-xl shadow-lg mt-8">
-            <h2 className="text-xl font-semibold text-white mb-4">Prueba Ingesta</h2>
+        <div className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-xl shadow-xl mt-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Prueba Ingesta</h2>
             <div className="flex flex-col gap-4">
                 <input
                     type="text"
@@ -46,21 +46,21 @@ export default function TestIngestion() {
                     value={texto}
                     onChange={(e) => setTexto(e.target.value)}
                     placeholder="Escribe un mensaje..."
-                    className="w-full p-3 bg-zinc-950 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-black focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                 />
                 <button
                     //llamamos a la mutacion
                     onClick={() => mutate(texto)}
                     disabled={isPending}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md disabled:opacity-50"
                 >
                     {/* Luego creamos un componente para los errores */}
                     {isPending ? "Enviando al Gateway..." : "Probar Conexión"}
                 </button>
                 {data?.data && (
-                    <div className="p-4 bg-emerald-950/50 border border-emerald-800 text-emerald-400 rounded-lg text-sm transition-all">
+                    <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm transition-all mt-4">
                         ✅ Último registro guardado:<br />
-                        <span className="text-emerald-200 block mt-2">
+                        <span className="text-emerald-700 block mt-2">
                             <strong>ID:</strong> {data.data.id} <br />
                             <strong>Texto:</strong> {data.data['texto-guardado']}
                         </span>
