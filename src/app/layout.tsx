@@ -5,6 +5,8 @@ import "./globals.css";
 // 1. Importamos el Provider de TanStack Query que creamos
 import { Toaster } from "react-hot-toast";
 import Providers from "./providers";
+import Navbar from "@/components/layout/Navbar";
+import Sidebar from "@/components/layout/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,16 +30,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es" // Cambiamos a español
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {/* 3. Envolvemos toda la aplicación para inyectar TanStack Query */}
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+      <body className="flex h-screen overflow-hidden bg-gray-50 text-gray-900 antialiased">
         <Providers>
-          {children}
+          <div className="flex w-full h-full">
+            {/* Sidebar lateral */}
+            <Sidebar />
+            
+            {/* Área principal contenedor */}
+            <div className="flex flex-col flex-1 overflow-hidden">
+              {/* Navbar superior */}
+              <Navbar />
+              
+              {/* Contenido principal scrolleable */}
+              <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+                {children}
+              </main>
+            </div>
+          </div>
         </Providers>
-        {/* 2. Lo ponemos aquí para que escuche las notificaciones en toda la app */}
         <Toaster position="bottom-right" reverseOrder={false} />
       </body>
     </html>

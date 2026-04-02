@@ -1,0 +1,601 @@
+ID;Tipo;ID Padre;Título / Descripción;Criterios de Aceptación;Actividades;Responsable;Sprint;Fecha Inicio;Fecha Fin
+SCRUM-121;**Epic**;;Gestion de datos;;;;;18/03/2026;8/04/2026
+SCRUM-148;Historia;SCRUM-121;Carga de archivo desde UI;"Criterios de Aceptación
+CA 1: Procesamiento de formatos estructurados válidos
+
+Dado que el usuario se encuentra en la interfaz de carga de datos
+
+Cuando envía una petición POST al endpoint de ingesta con un archivo de extensión .csv o .json
+
+Entonces el sistema (ms-ingestion) debe aceptar la petición, validar la extensión y comenzar el proceso de lectura y persistencia de los metadatos.
+
+CA 2: Rechazo de formatos no soportados
+
+Dado que el usuario intenta cargar un archivo al sistema
+
+Cuando el archivo tiene una extensión no estructurada (ej. .pdf, .docx, .png, .xlsx)
+
+Entonces el sistema debe rechazar la petición inmediatamente.
+
+Y debe retornar un código de estado HTTP 400 Bad Request con el mensaje: ""Formato no válido. Por favor suba un archivo CSV o JSON.""
+
+CA 3: Cumplimiento del contrato de respuesta de la API
+
+Dado que un archivo válido fue recibido y sus metadatos fueron guardados correctamente en la base de datos
+
+Cuando el microservicio finaliza su ejecución
+
+Entonces debe retornar un código HTTP 200 OK o HTTP 201 Created.
+
+Y el cuerpo de la respuesta debe cumplir estrictamente con el esquema StandardResponse, incluyendo: success: true, un dataset_load_id generado, y un trace_id.
+
+CA 4: Integración obligatoria con Auditoría
+
+Dado que el ms-ingestion procesó exitosamente la carga del dataset
+
+Cuando el registro se confirma en la base de datos de ingesta
+
+Entonces el sistema debe enviar un evento de tipo DATA_LOADED al microservicio ms-audit.
+
+Y este evento debe contener el nombre del archivo original, el nombre del servicio origen (ms-ingestion) y el timestamp de la carga.
+
+CA 5: Validación de integridad del contenido
+
+Dado que el archivo subido tiene una extensión válida (.csv o .json)
+
+Cuando el motor de ingesta detecta que el archivo tiene un tamaño de 0 bytes o carece de cabeceras (headers)
+
+Entonces el proceso debe interrumpirse inmediatamente.
+
+Y debe retornar un código HTTP 400 Bad Request indicando que el archivo está vacío o corrupto, sin generar registros huérfanos en la base de datos.";Como usuario, quiero cargar datasets estructurados, para iniciar el análisis territorial.;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-212;Tarea;SCRUM-121;Crear componente React básico para seleccionar y subir archivos CSV.;;"Objetivo: Crear la interfaz de usuario que permita arrastrar o seleccionar archivos estructurados y enviarlos al backend.
+
+Detalles Técnicos: > - Implementar un input type=""file"" o dropzone que restrinja desde el navegador la selección a extensiones .csv y .json exclusivamente.
+
+Consumir el endpoint POST del API Gateway.
+
+Mostrar un estado de carga (loader) mientras el archivo se procesa.";Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-213;Tarea;SCRUM-121;Implementar endpoint POST en ms-ingestion para recibir y almacenar dataset.;;"Objetivo: Recibir el payload (multipart/form-data) validando integridad física antes de procesar el contenido.
+
+Detalles Técnicos: > - Rechazar inmediatamente archivos con tamaño 0 bytes o extensiones inválidas (.pdf, .xlsx) retornando HTTP 400.
+
+El endpoint debe responder obligatoriamente con el esquema StandardResponse (incluyendo dataset_load_id, trace_id y success: true).";Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-214;Tarea;SCRUM-121;Registrar metadatos (DatasetLoad) en base de datos para trazabilidad.;;"Objetivo: Asegurar la trazabilidad del archivo recibido guardando sus metadatos iniciales en la base de datos de ingesta.
+
+Detalles Técnicos: > - Crear el modelo/entidad DatasetLoad.
+
+Al recibir un archivo exitosamente, insertar un registro con estado PROCESSING.";Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-215;Tarea;SCRUM-121;Integrar la llamada API pública para obtener datos;;"Descripción: > Objetivo: Notificar al microservicio de auditoría que un nuevo archivo ha sido recibido.
+
+Detalles Técnicos: > - Enviar una petición HTTP POST al ms-audit con el evento DATA_LOADED.
+
+El payload debe incluir: nombre del archivo, servicio origen (ms-ingestion) y timestamp.";Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-122;**Epic**;;Validación de Datos;;;;;18/03/2026;8/04/2026
+SCRUM-149;Historia;SCRUM-122;Validación integrada UI + API;"Criterios de Aceptación
+CA 1: Validación estricta de cabeceras (Headers obligatorios)
+
+Dado que el ms-ingestion comienza a procesar un archivo estructurado válido
+
+Cuando lee la primera fila (cabeceras) del dataset
+
+Entonces debe verificar la existencia de las columnas mínimas obligatorias definidas por el sistema (ej. zone_code, zone_name).
+
+Y si falta al menos una cabecera obligatoria, el sistema debe abortar el proceso, marcar el estado del archivo como REJECTED en la base de datos y retornar un error HTTP 422 Unprocessable Entity detallando las columnas faltantes.
+
+CA 2: Clasificación de registros (Fila por fila)
+
+Dado que el dataset superó la validación de cabeceras
+
+Cuando el sistema procesa el contenido del archivo
+
+Entonces debe iterar sobre cada registro y clasificarlo de forma individual.
+
+Y debe contabilizar el número total de filas en la variable record_count.
+
+CA 3: Reglas de invalidación de registros (Datos críticos)
+
+Dado que el sistema está evaluando una fila específica del dataset
+
+Cuando la fila presenta un zone_code vacío/nulo, o un tipo de dato incompatible en una columna obligatoria (ej. texto en una columna que espera un valor numérico de población)
+
+Entonces la fila debe ser descartada del análisis.
+
+Y el sistema debe sumar +1 al contador invalid_record_count sin detener el procesamiento del resto del archivo.
+
+CA 4: Actualización de estado y persistencia de métricas
+
+Dado que el sistema ha finalizado la lectura completa del archivo
+
+Cuando termina de procesar la última fila
+
+Entonces debe actualizar el registro correspondiente en la tabla DatasetLoad de la base de datos.
+
+Y debe guardar los valores finales de status (ej. VALIDATED), record_count, valid_record_count e invalid_record_count.
+
+CA 5: Respuesta final de la validación
+
+Dado que el proceso de validación finalizó y se persistieron los resultados
+
+Cuando el microservicio emite su respuesta final
+
+Entonces debe retornar un código HTTP 200 OK.
+
+Y el cuerpo de la respuesta (StandardResponse) debe incluir en su nodo data el resumen estadístico de la carga (total de registros, válidos, inválidos y el estado final del dataset).";Como sistema, quiero validar la estructura interna del dataset cargado, para asegurar la consistencia de la información antes del análisis.;Brandon Yesith Ortiz Arenales;Sprint 1;18/03/2026;8/04/2026
+SCRUM-216;Tarea;SCRUM-122;Validación automática de formato y estructura.;;"Objetivo: Leer la primera fila del dataset y abortar si la estructura no cumple con el esquema mínimo de negocio.
+
+Detalles Técnicos: > - Si faltan columnas obligatorias (ej. zone_code, zone_name), detener la ejecución.
+
+Marcar el registro en la BD como REJECTED.
+
+Retornar HTTP 422 indicando exactamente qué columnas faltaron.";Brandon Yesith Ortiz Arenales;Sprint 1;18/03/2026;8/04/2026
+SCRUM-218;Tarea;SCRUM-122;Evitar carga de datos con errores estructurales.;;"Objetivo: Procesar el archivo iterando cada fila para clasificar datos limpios vs errores estructurales sin detener el archivo completo.
+
+Detalles Técnicos: > - Mantener contadores en memoria: record_count, valid_record_count, invalid_record_count.
+
+Si una fila tiene un campo clave vacío (ej. zone_code), descartarla y sumar +1 a invalid_record_count.
+
+Al finalizar, actualizar la tabla DatasetLoad con el estado final (ej. VALIDATED) y las métricas calculadas. Retornar HTTP 200 con el resumen.";Brandon Yesith Ortiz Arenales;Sprint 1;18/03/2026;8/04/2026
+SCRUM-217;Tarea;SCRUM-122;Mapear respuestas de error (422, 400) a notificaciones visuales en UI;;"Objetivo: Traducir los códigos y mensajes del backend a una experiencia amigable para el usuario.
+
+Detalles Técnicos: > - Usar librerías como SweetAlert2 o React Toastify.
+
+Si llega un HTTP 422, mostrar alerta roja detallando las columnas faltantes.
+
+Si llega HTTP 200, mostrar mensaje de éxito con el total de filas procesadas.";Brandon Yesith Ortiz Arenales;Sprint 1;18/03/2026;8/04/2026
+SCRUM-123;**Epic**;;Persistencia;;;;;18/03/2026;8/04/2026
+SCRUM-150;Historia;SCRUM-123;Datos persistidos;"Criterios de Aceptacion
+
+CA 1: Registro inicial de metadatos (Tabla DatasetLoad)
+
+Dado que el microservicio de ingesta recibe y aprueba un dataset estructurado
+
+Cuando el proceso de carga se inicializa
+
+ 
+
+Entonces el sistema debe insertar un registro en la tabla DatasetLoad.
+
+ 
+
+ 
+
+Y debe poblar los campos obligatorios: un identificador único (UUID), file_name, uploaded_at, y establecer el status inicial en PROCESSING .
+
+ 
+
+CA 2: Trazabilidad física (Tabla DatasetFileReference)
+
+Dado que el archivo físico se ha almacenado en su ubicación temporal o definitiva
+
+Cuando el sistema registra la ubicación lógica del archivo
+
+ 
+
+Entonces el sistema debe crear un registro en la tabla DatasetFileReference.
+
+ 
+
+ 
+
+Y debe incluir la llave foránea dataset_load_id, la ruta de almacenamiento (storage_path), el formato (file_format) y un checksum de integridad .
+
+ 
+
+CA 3: Actualización post-validación
+
+Dado que el proceso de validación interna de filas ha finalizado
+
+Cuando el sistema obtiene el conteo final de registros
+
+Entonces el sistema debe actualizar el registro correspondiente en la tabla DatasetLoad.
+
+ 
+
+Y debe persistir los valores en los campos record_count, valid_record_count e invalid_record_count .
+
+ 
+
+Y debe actualizar el estado (status) a COMPLETED si fue exitoso, o FAILED si la validación abortó el proceso.
+
+CA 4: Integridad Transaccional (Rollback)
+
+Dado que el sistema está insertando o actualizando datos en las tablas de ingesta
+
+Cuando ocurre un error fatal o pérdida de conexión con el motor de base de datos
+
+Entonces el sistema debe ejecutar un rollback de la transacción completa.
+
+Y debe retornar un error HTTP 500 Internal Server Error para asegurar que no queden registros incompletos o huérfanos.
+
+CA 5: Aislamiento de base de datos
+
+Dado que el microservicio de ingesta requiere persistir la información de trazabilidad
+
+Cuando se realiza la conexión para guardar los datos
+
+ 
+
+Entonces los datos deben almacenarse única y exclusivamente en la base de datos propia del microservicio.";Como sistema quiero almacenar datasets y su metadata para mantener trazabilidad;Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-238;Tarea;SCRUM-123;Crear Bucket S3;;"Objetivo: Configurar el entorno de almacenamiento de objetos (AWS S3 o LocalStack).
+
+Detalles Técnicos: > - Crear el bucket y configurar políticas de red locales. (Se puede omitir la tarea de Mocks si se usa LocalStack nativo en Docker).";Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-239;Tarea;SCRUM-123;Desarrollar servicio de conexión a S3 y guardado de archivos físicos;;"Objetivo: Desarrollar la lógica en el backend para subir el binario al bucket y generar un Checksum (MD5/SHA256).
+
+Detalles Técnicos: > - Inyectar dependencias (ej. boto3 en Python) para subir el archivo.
+
+Extraer la ruta de almacenamiento (storage_path) y retornarla a la capa de servicios.";Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-240;Tarea;SCRUM-123;Crear Mocks para validar;;;Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-221;Tarea;SCRUM-123;Controlar versiones o estados para evitar sobrescribir datos sin control.;;;Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-219;Tarea;SCRUM-123;Implementar entidad DatasetFileReference y protección transaccional (Rollbacks);;"Objetivo: Guardar la ruta física del archivo y su checksum en la base de datos de manera atómica.
+
+Detalles Técnicos: > - Crear modelo DatasetFileReference vinculándolo al dataset_load_id.
+
+Todo el proceso de inserción de BD debe estar en un bloque TRY/CATCH. Si la base de datos falla o se pierde la conexión, ejecutar ROLLBACK total y retornar HTTP 500.";Thais perez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-124;**Epic**;;Consulta de datos;;;;;18/03/2026;8/04/2026
+SCRUM-151;Historia;SCRUM-124;Listado en UI;"Criterios de Aceptación
+CA 1: Consulta exitosa de zonas disponibles (Endpoint exacto)
+
+Dado que el sistema cuenta con datasets procesados y zonas territoriales almacenadas en la base de datos
+
+Cuando el cliente (frontend) envía una petición GET al endpoint /api/v1/zones del API Gateway
+
+Entonces el sistema debe retornar un código HTTP 200 OK.
+
+ 
+
+Y el cuerpo de la respuesta debe cumplir con el contrato estándar, devolviendo el listado dentro del nodo data (ejemplo: ""data"": { ""zones"": [""Zona A"", ""Zona B""] }) .
+
+ 
+
+CA 2: Manejo de estado vacío (Sin datos disponibles)
+
+Dado que el sistema aún no tiene zonas procesadas
+
+Cuando el cliente realiza la petición GET a /api/v1/zones
+
+Entonces el sistema debe retornar un código HTTP 200 OK.
+
+Y el nodo data.zones debe retornar un arreglo vacío ([]), permitiendo al frontend mostrar un mensaje de ""Aún no hay zonas cargadas"".
+
+CA 3: Consumo estricto a través del API Gateway (BFF)
+
+Dado que el frontend necesita renderizar la lista de zonas
+
+Cuando ejecuta la petición de red
+
+Entonces la llamada debe apuntar obligatoriamente a la URL base del Gateway configurada en sus variables de entorno (ej. http://localhost:8000/api/v1/zones).
+
+Y el frontend tiene estrictamente prohibido intentar consumir el puerto directo de los microservicios internos (ej. puerto 8001 o 8002).
+
+CA 4: Visualización en la interfaz de usuario (Frontend React)
+
+Dado que el frontend recibe una respuesta HTTP 200 OK desde /api/v1/zones
+
+Cuando se procesa el nodo data.zones
+
+Entonces la interfaz web debe renderizar las zonas de forma clara (ej. en una tabla, lista o menú desplegable).
+
+Y debe permitir al usuario seleccionar o identificar visualmente qué territorios están listos para análisis.
+
+CA 5: Manejo de errores de conexión (Resiliencia)
+
+Dado que el frontend intenta consultar el endpoint /api/v1/zones
+
+Cuando el API Gateway devuelve un error HTTP 500 o la petición falla por problemas de red
+
+Entonces el frontend debe capturar la excepción y mostrar un mensaje amigable al usuario (ej. ""No se pudo cargar la lista de zonas en este momento"").
+
+Y la aplicación web no debe colapsar ni mostrar errores técnicos en la pantalla.";"Como usuario, 
+
+quiero consultar zonas disponibles, para poder analizarlas.";Kenneth Albadan;Sprint 1;18/03/2026;8/04/2026
+SCRUM-222;Tarea;SCRUM-124;esarrollar endpoint GET /api/v1/zones en API Gateway y lógica de consulta;;"Objetivo: Exponer la información de las zonas procesadas hacia el frontend mediante un endpoint seguro y estandarizado. Detalles Técnicos:
+
+Capa de Datos: Crear la query (consulta) optimizada para listar las zonas disponibles desde la base de datos.
+
+API Gateway: Implementar la ruta GET /api/v1/zones.
+
+Contrato (CA 1 y 2): El endpoint debe retornar siempre un HTTP 200. Si hay datos, devolverlos dentro del nodo data.zones como un arreglo. Si la tabla está vacía, el servidor no debe fallar, simplemente debe retornar un arreglo vacío [].";Kenneth Albadan;Sprint 1;18/03/2026;8/04/2026
+SCRUM-242;Tarea;SCRUM-124;Desarrollar vista React para listado de zonas y manejo de estados;;"Objetivo: Consumir el endpoint de zonas y renderizar la información en la interfaz de usuario, controlando los escenarios donde no hay datos o falla la red. Detalles Técnicos:
+
+Consumo (CA 3): Hacer la petición HTTP (fetch o axios) apuntando estrictamente a la URL del API Gateway.
+
+Renderizado (CA 4): Mostrar las zonas en un componente visual claro (como una tabla, lista o menú desplegable).
+
+Manejo de Estados (CA 2 y 5): > - Si el endpoint devuelve [], mostrar en pantalla el mensaje: ""Aún no hay zonas cargadas"".
+
+Envolver la petición en un bloque try/catch. Si el Gateway devuelve error 500 o no hay internet, capturar la excepción y mostrar una alerta amistosa sin que la aplicación colapse.";Kenneth Albadan;Sprint 1;18/03/2026;8/04/2026
+SCRUM-125;**Epic**;;interfaz base;;;;;18/03/2026;8/04/2026
+SCRUM-152;Historia;SCRUM-125;UI funcional;"Criterios de aceptación 
+CA 1: Ejecución de la interfaz base
+
+Dado que el sistema ha sido desplegado,
+Cuando el usuario accede a la URL base del frontend React,
+Entonces debe cargarse correctamente una interfaz inicial sin errores críticos.
+CA 2: Visualización mínima
+
+Dado que la interfaz inicial está cargada,
+Cuando el usuario la visualiza en el navegador,
+Entonces deben mostrarse elementos básicos (barra de navegación, placeholders para contenido, estado inicial).
+CA 3: Interacción básica disponible
+
+Dado que la interfaz React está activa,
+Cuando el usuario intenta interacciones simples (clic en menú, botones deshabilitados inicialmente),
+Entonces la UI responde sin bloqueos ni fallos.
+CA 4: Consumo del API Gateway para endpoints base
+
+Dado que el frontend realiza llamadas para obtener datos iniciales,
+Cuando el sistema envía solicitudes a los endpoints a través del BFF,
+Entonces las respuestas son correctamente recibidas y pueden ser usadas en la UI.
+CA 5: Separación estricta de lógica
+
+Dado que el frontend está corriendo,
+Cuando se revisa el código y comportamientos de la UI,
+Entonces no se realiza lógica analítica, cálculo de score ni transformación crítica en frontend.
+La UI solo consume datos ya procesados y presenta resultados.
+CA 6: Manejo de errores visual en la UI
+
+Dado que la UI consume servicios del backend,
+Cuando ocurre un fallo en la conexión o error del servidor,
+Entonces debe mostrarse un mensaje amigable y la interfaz (sweetalert) no debe colapsar ni presentar errores visibles para el usuario.";Como usuario quiero una interfaz inicial para interactuar con el sistema;Sanchez Arias Jonattan Steven;Sprint 1;18/03/2026;8/04/2026
+SCRUM-223;Tarea;SCRUM-125;Inicialización del proyecto Next.js, Layout Base y Tailwind CSS;;"Objetivo: Establecer los cimientos del proyecto frontend asegurando que la aplicación compile sin errores y muestre la estructura visual básica. Detalles Técnicos:
+
+Inicializar el proyecto con React/Next.js y configurar Tailwind CSS para los estilos.
+
+Crear la estructura de carpetas estándar (ej. /components, /pages o /app, /utils).
+
+Desarrollar el Layout principal que incluya una barra de navegación (Navbar) funcional y placeholders para el contenido.
+
+Criterio de éxito (CA 1, 2 y 3): Al ejecutar el comando de inicio, la UI debe cargar instantáneamente en el navegador, permitiendo clics en el menú sin que la app colapse.";Sanchez Arias Jonattan Steven;Sprint 1;18/03/2026;8/04/2026
+SCRUM-241;Tarea;SCRUM-125;Configuración de Cliente HTTP (BFF) y Manejador de Errores Global (SweetAlert);;"Objetivo: Dejar configurada la capa de conexión hacia el API Gateway y asegurar que la UI reaccione correctamente ante fallos del servidor, manteniendo la lógica analítica fuera del frontend. Detalles Técnicos:
+
+Configurar una instancia global de Fetch o Axios apuntando estrictamente a la URL del API Gateway (BFF).
+
+Implementar interceptores o manejadores globales para atrapar errores 500 o fallos de red.
+
+Integrar la librería SweetAlert2 para mostrar pop-ups amigables al usuario (""Servicio no disponible"", ""Error de conexión"") evitando que la interfaz se rompa o muestre errores en crudo.
+
+Criterio de éxito (CA 4, 5 y 6): El frontend solo debe recibir datos listos para renderizar. Si el API Gateway se cae, SweetAlert debe capturar la excepción y mostrar el aviso sin bloquear la navegación.";Sanchez Arias Jonattan Steven;Sprint 1;18/03/2026;8/04/2026
+SCRUM-126;**Epic**;;Infrastructura;;;;;18/03/2026;8/04/2026
+SCRUM-153;Historia;SCRUM-126;Sistema en Docker;"Criterios de Aceptación
+CA 1: Contenedorización individual (Dockerfiles)
+
+Dado que un microservicio o el API Gateway está listo para ser probado
+
+Cuando el motor de Docker lee el archivo Dockerfile en la raíz del servicio
+
+Entonces debe construir una imagen aislada, ligera y funcional basada en Python.
+
+Y la imagen final no debe contener archivos de desarrollo local (como la carpeta venv/, __pycache__/ o archivos .env locales).
+
+CA 2: Orquestación centralizada (Docker Compose)
+
+Dado que el equipo necesita levantar el ecosistema completo
+
+Cuando un desarrollador ejecuta el comando de inicialización (docker-compose up) en la raíz del proyecto global
+
+Entonces el orquestador debe descargar las imágenes de PostgreSQL e iniciar todos los servicios (Bases de datos, MS-Ingestion, API Gateway) de forma coordinada.
+
+Y debe respetar el orden de dependencia, asegurando que las bases de datos levanten antes que los microservicios.
+
+CA 3: Aislamiento y comunicación por red interna
+
+Dado que todos los contenedores están en ejecución
+
+Cuando el API Gateway necesita enviar una petición al microservicio de ingesta
+
+Entonces la comunicación debe resolverse internamente usando el nombre del contenedor como dominio (ej. http://ms-ingestion:8001).
+
+Y los microservicios internos tienen estrictamente prohibido exponer sus puertos directamente a la máquina anfitriona (solo el API Gateway debe exponer el puerto 8000 hacia afuera).
+
+CA 4: Inyección dinámica de variables de entorno
+
+Dado que las rutas de conexión cambian al pasar de local a contenedor
+
+Cuando los servicios se inicializan mediante Docker Compose
+
+Entonces el orquestador debe inyectar y sobreescribir automáticamente las variables de entorno necesarias (URLs de servicios, credenciales de bases de datos).
+
+Y los servicios deben conectarse exitosamente sin requerir que el desarrollador modifique el código fuente.
+
+CA 5: Persistencia de datos en contenedores (Volúmenes)
+
+Dado que el sistema utiliza contenedores de bases de datos efímeros
+
+Cuando un contenedor de PostgreSQL se detiene, se destruye o se reinicia
+
+Entonces los registros (como los datasets cargados) y las estructuras de las tablas no deben perderse.
+
+Y esto debe garantizarse mediante la configuración de volúmenes persistentes (volumes) mapeados correctamente en el orquestador.";Como equipo de desarrollo, queremos ejecutar el sistema en Docker, para garantizar la portabilidad y evitar conflictos de entorno.;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-224;Tarea;SCRUM-126;Contenedores Docker para backend, frontend y base de datos;;;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-227;Tarea;SCRUM-126;Servicios corriendo y comunicándose correctamente / API GATEWAY;;;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-225;Tarea;SCRUM-126;Contenedores Docker para backend, frontend y base de datos;;;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-226;Tarea;SCRUM-126;Configuración de Docker Compose.;;;Samuel Rodriguez;Sprint 1;18/03/2026;8/04/2026
+SCRUM-127;**Epic**;;Transformacion;;;;;18/03/2026;8/04/2026
+SCRUM-154;Historia;SCRUM-127;Pipeline funcional;"Criterios de Aceptación
+CA 1: Inicialización del proceso vía Endpoint
+
+Dado que un dataset ha completado su ingesta y su entidad DatasetLoad está en estado COMPLETED
+
+Cuando el orquestador (o el usuario vía Gateway) envía una petición POST al endpoint /api/v1/transform/{dataset_load_id} del microservicio de transformación (ms-transform)
+
+Entonces el sistema debe validar que el ID existe.
+
+Y debe extraer los registros crudos asociados a ese identificador para iniciar en memoria el proceso de ETL.
+
+CA 2: Estandarización y limpieza de datos en memoria
+
+Dado que el ms-transform está procesando los registros extraídos
+
+Cuando evalúa las columnas de texto (ej. zone_name, region) y numéricas
+
+Entonces debe aplicar reglas de negocio: eliminar espacios (trim), convertir textos a un formato uniforme, y manejar valores nulos (imputando ceros en métricas o descartando la fila si el zone_code viene vacío).
+
+CA 3: Persistencia en el modelo analítico (Nuevas Entidades)
+
+Dado que el motor de transformación ha limpiado los datos
+
+Cuando finaliza el procesamiento en memoria
+
+Entonces el sistema debe insertar los datos resultantes en la entidad destino ZoneAnalytics (o la tabla maestra de análisis territorial) dentro de la base de datos propia de este microservicio (db_analytics).
+
+Y debe crear un registro en la entidad TransformationLog que guarde la fecha, el dataset_load_id original (llave foránea lógica) y la cantidad de filas transformadas.
+
+CA 4: Cumplimiento del contrato de respuesta (API Response)
+
+Dado que la inserción en ZoneAnalytics y TransformationLog fue exitosa
+
+Cuando el endpoint /api/v1/transform/{dataset_load_id} finaliza su ejecución
+
+Entonces debe retornar un código HTTP 200 OK.
+
+Y el cuerpo debe cumplir con el esquema StandardResponse, incluyendo success: true y devolviendo en el nodo data las métricas de la operación (ej. transformed_records y execution_time_ms).
+
+CA 5: Registro de auditoría inter-servicios
+
+Dado que el proceso de transformación finalizó y respondió con éxito
+
+Cuando se cierra la transacción
+
+Entonces el ms-transform debe enviar asíncronamente (o síncronamente si así se definió) un evento de tipo TRANSFORMATION_COMPLETED al endpoint interno del ms-audit (ej. POST http://ms-audit:8002/api/v1/events).
+
+Y el evento debe contener el trace_id original para no perder el hilo de la petición.";Como sistema, quiero transformar datos estructurados, para prepararlos para el análisis territorial.;davidjerezaviles;Sprint 1;18/03/2026;8/04/2026
+SCRUM-228;Tarea;SCRUM-127;Desarrollar endpoint POST /transform/{id} y motor ETL en memoria;;"Objetivo: Extraer los datos crudos, limpiarlos aplicando reglas de negocio e informar resultados.
+
+Detalles Técnicos: > - Validar que el dataset_load_id existe. Si no, retornar error 404.
+
+Reglas de limpieza: Aplicar trim() a textos, estandarizar mayúsculas/minúsculas, e imputar nulos (ej. 0 en métricas).
+
+Responder HTTP 200 con el esquema StandardResponse, métricas de transformación (transformed_records) y emitir el evento TRANSFORMATION_COMPLETED hacia ms-audit.";davidjerezaviles;Sprint 1;18/03/2026;8/04/2026
+SCRUM-229;Tarea;SCRUM-127;Detectar y corregir inconsistencias, valores faltantes o inválidos.;;Se generan registros de transformación para trazabilidad.;davidjerezaviles;Sprint 1;18/03/2026;8/04/2026
+SCRUM-231;Tarea;SCRUM-127;Persistir resultados limpios en entidades ZoneAnalytics y TransformationLog;;"Objetivo: Guardar los datos ya normalizados en el modelo analítico para su futura consulta.
+
+Detalles Técnicos: > - Insertar datos limpios en la tabla ZoneAnalytics.
+
+Guardar el registro de la operación en TransformationLog.";davidjerezaviles;Sprint 1;18/03/2026;8/04/2026
+SCRUM-236;Tarea;SCRUM-127;Aplicar reglas de negocio para estandarización (nominalización, enriquecimiento).;;;davidjerezaviles;Sprint 1;18/03/2026;8/04/2026
+SCRUM-128;**Epic**;;Observabilidad;;;;;18/03/2026;8/04/2026
+SCRUM-155;Historia;SCRUM-128;Health check funcional;"Criterios de Aceptación
+CA 1: Disponibilidad básica del servicio web
+
+Dado que un componente del sistema (API Gateway o cualquier microservicio interno) se encuentra en ejecución
+
+Cuando una herramienta de monitoreo o el orquestador envía una petición GET al endpoint /health
+
+Entonces el sistema debe procesar la petición y responder en menos de 500ms.
+
+Y debe retornar un código HTTP 200 OK confirmando que el servidor web (Uvicorn/FastAPI) está recibiendo tráfico.
+
+CA 2: Verificación profunda de base de datos (Deep Health Check)
+
+Dado que se consulta el endpoint /health de un microservicio que posee persistencia (ej. ms-ingestion o ms-transform)
+
+Cuando el microservicio procesa la petición
+
+Entonces debe ejecutar internamente una consulta ligera a su base de datos asignada (ej. un SELECT 1 usando SQLAlchemy).
+
+Y debe validar que la conexión al motor de PostgreSQL está activa y funcional antes de emitir la respuesta.
+
+CA 3: Contrato de respuesta de observabilidad
+
+Dado que la validación de salud (web y base de datos) fue exitosa
+
+Cuando el endpoint /health emite su respuesta
+
+Entonces el cuerpo de la respuesta JSON debe cumplir con una estructura predecible.
+
+Y debe incluir obligatoriamente: service_name (ej. ""ms-ingestion""), status (con valor ""healthy"" o ""up""), timestamp (fecha y hora de la consulta), y db_connection (con valor true o false).
+
+CA 4: Notificación de degradación del servicio
+
+Dado que un microservicio está en ejecución pero ha perdido conexión con su base de datos o no puede operar normalmente
+
+Cuando recibe una petición en su endpoint /health
+
+Entonces el sistema debe retornar un código HTTP 503 Service Unavailable.
+
+Y el JSON de respuesta debe indicar el estado general como ""unhealthy"" o ""degraded"", especificando en qué componente ocurrió el fallo (ej. db_connection: false).
+
+CA 5: Integración con el orquestador (Docker Healthcheck)
+
+Dado que los servicios están desplegados en la red de Docker Compose
+
+Cuando el motor de contenedores evalúa la disponibilidad para coordinar el inicio de otros servicios dependientes
+
+Entonces Docker debe invocar internamente este endpoint /health.
+
+Y solo debe marcar el contenedor con el estado healthy (permitiendo que el API Gateway empiece a enrutarle tráfico) si recibe un código de respuesta HTTP 200.";Como equipo de desarrollo, queremos verificar el estado de los servicios, para facilitar las pruebas, el monitoreo y la orquestación.;Juan Esteban Melo Munevar;Sprint 1;18/03/2026;8/04/2026
+SCRUM-232;Tarea;SCRUM-128;Implementar endpoint /health (Deep Health Check) en microservicios;;"Objetivo: Habilitar el monitoreo de estado para el orquestador y asegurar conexión a base de datos.
+
+Detalles Técnicos: > - Crear ruta GET /health.
+
+El código debe hacer un SELECT 1 rápido a su BD correspondiente.
+
+Si la DB responde: Retornar HTTP 200 y JSON {status: ""healthy"", db_connection: true}.
+
+Si la DB falla: Retornar HTTP 503 y JSON {status: ""degraded"", db_connection: false}.";Juan Esteban Melo Munevar;Sprint 1;18/03/2026;8/04/2026
+SCRUM-129;**Epic**;;Auditoria Basica;;;;;18/03/2026;8/04/2026
+SCRUM-156;Historia;SCRUM-129;Registro de eventos;"Criterios de Aceptación
+CA 1: Contrato del Endpoint de Eventos
+
+Dado que un microservicio (ej. ms-ingestion) necesita registrar una acción importante (como el evento DATA_LOADED)
+
+Cuando envía una petición POST al endpoint /api/v1/events del microservicio de auditoría (ms-audit)
+
+Entonces el ms-audit debe validar que el payload (cuerpo de la petición) contenga los campos mínimos obligatorios: event_type, source_service, trace_id y un nodo details (JSON libre con el contexto).
+
+Y debe retornar un código HTTP 201 Created al confirmar la recepción.
+
+CA 2: Persistencia Inmutable (Entidad AuditLog)
+
+Dado que el ms-audit recibe un payload válido en su endpoint
+
+Cuando procesa la solicitud para persistir la información
+
+Entonces debe insertar un nuevo registro en su entidad/tabla AuditLog dentro de su propia base de datos aislada (db_audit).
+
+Y el campo details debe guardarse utilizando un tipo de dato flexible (ej. JSONB en PostgreSQL) para soportar distintos tipos de eventos sin alterar el esquema de la tabla.
+
+CA 3: Continuidad de Trazabilidad (Trace ID)
+
+Dado que el API Gateway genera un identificador único por cada petición del usuario frontend
+
+Cuando el evento se registra finalmente en la tabla AuditLog
+
+Entonces el registro debe guardar intacto el trace_id original.
+
+Y este identificador debe permitir rastrear en el futuro la cadena completa de acciones que esa petición detonó a través de todos los microservicios.
+
+CA 4: Patrón ""Solo Adición"" (Append-Only) y Aislamiento
+
+Dado que el propósito de este servicio es mantener una bitácora histórica
+
+Cuando se interactúa con la tabla AuditLog
+
+Entonces el sistema no debe exponer ni permitir operaciones de actualización (UPDATE) o borrado (DELETE) a través de la API, operando estrictamente bajo el patrón append-only.
+
+Y la base de datos db_audit no debe tener llaves foráneas apuntando a entidades de otros microservicios (ej. no debe apuntar a DatasetLoad).
+
+CA 5: Resiliencia y Desacoplamiento (Fire and Forget)
+
+Dado que el ms-ingestion intenta notificar al ms-audit sobre un archivo cargado
+
+Cuando el ms-audit no responde, está caído, o retorna un error HTTP 500
+
+Entonces el ms-ingestion debe capturar el error y registrarlo localmente en sus propios logs de consola/archivo.
+
+Y NO DEBE abortar la transacción principal (la carga del archivo del usuario debe finalizar con éxito devolviendo HTTP 200 al frontend), garantizando que una falla en auditoría no bloquee la operatividad del negocio.";Como sistema, quiero registrar eventos de carga y procesamiento, para mantener la trazabilidad transversal de las operaciones.;Brayan Zabala;Sprint 1;18/03/2026;8/04/2026
+SCRUM-233;Tarea;SCRUM-129;Modelar y desplegar base de datos de auditoría (db_audit) con JSONB;;"Objetivo: Crear una base de datos aislada, preparada para recibir eventos dinámicos.
+
+Detalles Técnicos: > - Crear la tabla AuditLog. Es estrictamente prohibido usar llaves foráneas hacia otros microservicios.
+
+El campo details debe ser de tipo JSONB (o similar, dependiendo del motor) para flexibilidad.";Brayan Zabala;Sprint 1;18/03/2026;8/04/2026
+SCRUM-234;Tarea;SCRUM-129;Implementar endpoint POST /api/v1/events bajo patrón Append-Only;;"Objetivo: Recibir eventos de toda la arquitectura y persistirlos irrevocablemente.
+
+Detalles Técnicos: > - Validar obligatoriedad de event_type, source_service, trace_id y details.
+
+Retornar HTTP 201. NO crear métodos de actualización (PUT/PATCH) ni borrado (DELETE) en este controlador.";Brayan Zabala;Sprint 1;18/03/2026;8/04/2026
+SCRUM-235;Tarea;SCRUM-129;"Implementar patrón ""Fire-and-Forget"" en llamadas a ms-audit";;"Objetivo: Asegurar que si el microservicio de auditoría cae, no afecte la operatividad del negocio (Resiliencia).
+
+Detalles Técnicos: > - Configurar las peticiones salientes hacia ms-audit desde otros servicios para que ignoren fallos (Timeouts rápidos).
+
+Si la petición a auditoría da Error 500, capturarlo (TRY/CATCH), hacer log local en consola, pero dejar que la transacción principal continúe exitosamente.";Brayan Zabala;Sprint 1;18/03/2026;8/04/2026
