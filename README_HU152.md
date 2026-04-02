@@ -52,3 +52,17 @@ npm run build
 
 ## Arquitectura BFF
 El frontend se comunica exclusivamente con el **API Gateway (puerto 8000)** siguiendo el patrón Backend For Frontend (BFF). Ningún microservicio es consumido directamente por el cliente.
+
+## Explicación Técnica Detallada
+
+### 1. Interceptor Centralizado (SweetAlert2 + Axios)
+El cliente HTTP (`services/apiClient.ts`) es el único responsable de lanzar peticiones. Está configurado con un interceptor de respuesta orientado a abstraer el manejo de errores global:
+- **Red/500**: Lanza alertas rojas críticas cuando el BFF o microservicio se cae.
+- **422/400**: Interpreta el cuerpo JSON estándar y usa las validaciones de backend mostrando viñetas con alertas naranjas.
+- **Trazabilidad**: Todo mensaje de error detecta la propiedad opcional `trace_id` de la respuesta y la incrusta en el HTML de la alerta visual. De esta forma, el usuario puede proveer el ID exacto a soporte para facilitar el monitoreo en los logs.
+
+### 2. Main Layout Persistente (`app/layout.tsx`)
+El layout raíz fue alterado para reemplazar la vista en blanco por defecto por una envolvente general conformada por:
+- `Sidebar.tsx`: Menú lateral estilizado que contendrá las rutas (Ingesta, Zonas, etc.).
+- `Navbar.tsx`: Barra superior para búsquedas y notificaciones de forma global.
+Al poner estos elementos dentro del `RootLayout`, están presentes permanentemente sin necesidad de inyectarlos en cada página, permitiendo un ruteo ligero y aprovechando la naturaleza Server Component de la arquitectura Next.js (App Router). Adicionalmente, el layout envuelve a TanStack Query (`Providers`) para cacheo de datos.
