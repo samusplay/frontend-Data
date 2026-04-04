@@ -36,6 +36,7 @@ export async function senDataIngesta(formData: FormData) {
         //si sale bien
         return {
             success: true,
+            //no debemos hacer cambios ya que pasamos los campos de zod
             data: validationOutput.data.data
         };
     } catch (err: any) {
