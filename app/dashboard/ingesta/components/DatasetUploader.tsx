@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { senDataIngesta } from "../actions/ingestion";
+import { senDataIngesta } from "../../../actions/ingestion";
 
 
 
