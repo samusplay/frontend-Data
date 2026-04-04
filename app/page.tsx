@@ -1,4 +1,5 @@
-import TestIngestion from "./components/TestIngestion";
+import DatasetUploader from "./components/DatasetUploader";
+
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
       </div>
 
       {/* Inyectamos componentes*/}
-      <TestIngestion />
+      <DatasetUploader/>
 
       {/* Un pequeño footer (opcional) */}
       <div className="mt-12 text-sm text-zinc-600">

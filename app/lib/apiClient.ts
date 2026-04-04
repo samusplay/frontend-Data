@@ -1,38 +1,42 @@
 import { GATEWAY_URL } from './config';
 
-// Definimos qué opciones puede recibir nuestro cliente
 type FetchOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  body?: any; // Recibe el objeto JS y él mismo lo hace JSON.stringify
+  body?: any; 
   cache?: RequestCache;
 };
 
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {
-  // 1. Arma la URL final automáticamente
   const url = `${GATEWAY_URL}${endpoint}`;
   
-  // 2. Configura los headers estándar
+  // Verificamos si el body es un FormData (para archivos)
+  const isFormData = options.body instanceof FormData;
+
   const config: RequestInit = {
     method: options.method || 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    // Si NO es FormData, forzamos JSON. Si es FormData, dejamos que fetch ponga el header automáticamente.
+    headers: isFormData ? {} : { 'Content-Type': 'application/json' },
     cache: options.cache || 'no-store',
   };
 
-  // 3. Si hay un body, lo convierte a JSON
   if (options.body) {
-    config.body = JSON.stringify(options.body);
+    // Si es FormData, lo pasamos crudo. Si es un objeto normal, lo hacemos string.
+    config.body = isFormData ? options.body : JSON.stringify(options.body);
   }
 
-  // 4. Ejecuta el fetch
   const response = await fetch(url, config);
 
-  // 5. Maneja el error HTTP genérico (los famosos 400 y 500)
+  // Intentamos extraer el JSON de error si existe, para mensajes más claros
   if (!response.ok) {
-    throw new Error(`Error en el servidor: ${response.status}`);
+    let errorMessage = `Error en el servidor: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.detail) errorMessage = errorData.detail;
+    } catch (e) {
+      // Si no es JSON, dejamos el mensaje genérico
+    }
+    throw new Error(errorMessage);
   }
 
-  // 6. Devuelve directamente el JSON crudo
   return response.json();
 }
