@@ -1,20 +1,78 @@
-export default function AnalisisPage() {
+import { getZones } from "@/app/actions/zones.actions";
+import Link from "next/link";
+import ZonasChart from "./components/zonas";
+
+
+export default async function AnalisisPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ datasetId?: string }>; 
+}) {
+  // === 1. LEER LA URL con await
+  
+  const params = await searchParams;
+  const datasetId = params?.datasetId;
+
+  // === 2. EL CANDADO ===
+  if (!datasetId) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="mb-8 border-b border-zinc-800 pb-4">
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+            Transformación y Análisis
+          </h1>
+          <p className="text-zinc-400 mt-2">
+            Consulta las zonas disponibles y aplica reglas de estandarización territorial.
+          </p>
+        </div>
+
+        <div className="p-16 text-center border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-900/40">
+          <svg className="w-16 h-16 text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <h3 className="text-xl font-medium text-zinc-300 mb-2">No hay datos activos en esta sesión</h3>
+          <p className="text-zinc-500 mb-8 max-w-md mx-auto">
+            Para ver las gráficas de análisis, primero necesitas procesar un archivo en el módulo de Ingesta.
+          </p>
+          <Link
+            href="/dashboard/ingesta"
+            className="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-6 rounded-xl transition-colors border border-zinc-700 inline-flex items-center gap-2"
+          >
+            Ir a Ingesta de Datos
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // === 3. LA PUERTA ABIERTA ===
+  const response = await getZones();
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="mb-8 border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold text-white">Transformación y Análisis</h1>
-        <p className="text-zinc-400 mt-2">
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+          Transformación y Análisis
+        </h1>
+        <p className="text-zinc-400 mt-2 flex items-center gap-2">
           Consulta las zonas disponibles y aplica reglas de estandarización territorial.
+          <span className="ml-2 bg-blue-900/30 text-blue-400 border border-blue-800/50 px-2 py-0.5 rounded font-mono text-xs hidden sm:inline-block">
+            ID: {datasetId}
+          </span>
         </p>
       </div>
-      
-      {/* Placeholder: Aquí irá nuestro ZoneSelector pronto */}
-      <div className="p-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30">
-        <svg className="w-12 h-12 text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-        </svg>
-        <h3 className="text-lg font-medium text-zinc-300">Módulo en Construcción</h3>
-        <p className="text-sm text-zinc-500 mt-1">Próximamente: Consulta de Zonas y Procesamiento ETL</p>
+
+      <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+        {!response.succcess || !response.data ? (
+          <p className="text-red-400 text-center py-10">
+            Error: {response.error || "No hay datos"}
+          </p>
+        ) : (
+          <ZonasChart data={response.data} />
+        )}
       </div>
     </div>
   );

@@ -1,28 +1,35 @@
 'use server'
-import { apiClient } from "../lib/apiClient";
-import { ZonesResponseSchema } from "../schemas/zones";
-import type { ZonesResult } from "../types/zones.types";
 
-export async function getZones(): Promise<ZonesResult> { // 👈 retorno explícito
+import { apiClient } from "../lib/apiClient"
+import { ZoneItem, ZonesResponseSchema } from "../schemas/zones"
+
+//esto lo que el componente espera
+export type ZonesResult = {
+  succcess: boolean
+  //el arreglo de zonas
+  data?: ZoneItem[]
+  error?: string
+}
+
+export async function getZones(): Promise<ZonesResult> {
   try {
-    const rawJson = await apiClient('/api/v1/zones', {
+    //conectamos al api client
+    const rawJson = await apiClient('/api/v1/transform/zones', {
       method: 'GET'
     });
-
-    const validation = ZonesResponseSchema.safeParse(rawJson);
-
+    //validamos con zod
+    const validation = ZonesResponseSchema.safeParse(rawJson)
+    //si hubo un fallo
     if (!validation.success) {
-      console.error("Error en contrato:", validation.error.format());
-      return { error: "El servidor respondió con un formato inesperado" };
+      return { succcess: false, error: "El servidor respondió con un formato inesperado" }
+    }
+    return {
+      succcess: true,
+      data: validation.data.data.zones
     }
 
-    return {
-      success: true,
-      data: validation.data.data.zones
-    };
-
   } catch (error) {
-    console.error("Error de conexión:", error);
-    return { error: "No se pudo conectar con el API Gateway" };
+    return { succcess: false, error: "Error de conexión con el servidor" };
+
   }
 }

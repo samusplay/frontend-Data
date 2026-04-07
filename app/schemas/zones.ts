@@ -1,12 +1,21 @@
 import { z } from 'zod';
 
-// Contrato de la respuesta del backend
+//como se ve cada zona
+export const ZoneItemSchema=z.object({
+  name:z.string(),
+  record_count:z.number()
+})
+
+//Respuesta del Backend
+
 export const ZonesResponseSchema = z.object({
+  success: z.boolean(),
   data: z.object({
-    //Como es una lista de zonas entonces se pone como un arreglo de Strings
-    zones: z.array(z.string())
-  })
+    zones: z.array(ZoneItemSchema) 
+  }),
+  error: z.any().nullable()
 });
 
-// TypeScript type automático desde Zod
-export type ZonesResponse = z.infer<typeof ZonesResponseSchema>;
+//Exportamos types no creamos Types aparte
+export type ZoneItem=z.infer<typeof ZoneItemSchema>;
+export type ZonesResponse=z.infer<typeof ZonesResponseSchema>;

@@ -1,9 +1,11 @@
 import { GATEWAY_URL } from './config';
 
+//imports que acepta api client
 type FetchOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   body?: any; 
   cache?: RequestCache;
+  headers?: Record<string, string>;
 };
 
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {

@@ -1,37 +1,44 @@
 "use client";
 
+import { processFilePipeline } from "@/app/actions/pipeline.action";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { senDataIngesta } from "../../../actions/ingestion";
 import { UploadMetrics } from "../types/metrics";
 
-
-
 export default function DatasetUploader() {
+    //inicializamos router
+    const router = useRouter();
     //usamos use state
-    const [file, setFile] = useState<File | null>(null)
+    const [file, setFile] = useState<File | null>(null);
     //use state tarjetas info cabeceras
-    const[metrics,setMetrics]=useState<UploadMetrics|null>(null)
+    const [metrics, setMetrics] = useState<UploadMetrics | null>(null);
+    //guardaremos el id
+    const [datasetId, setDatasetId] = useState<string | null>(null);
 
     //manejar el estado de la peticion
     const { mutate, isPending } = useMutation({
         //llamamos al server action
         mutationFn: async (formData: FormData) => {
-            const response = await senDataIngesta(formData)
+            const response = await processFilePipeline(formData);
             //manejo de errores
-            if (response.error) {
-                throw new Error(response.error)
+            if (!response.success) {
+                throw new Error(response.error);
             }
-            return response.data
+            return response;
         },
         onSuccess: (data) => {
             //metricas
-            if(data?.metrics){
-                setMetrics(data.metrics)
+            if (data?.metrics) {
+                setMetrics(data.metrics);
+            }
+            //comprobante
+            if (data?.datasetId) {
+                setDatasetId(data.datasetId);
             }
             toast.success(
-                `¡Dataset subido para el análisis!\nTrace ID: ${data?.trace_id}`,
+                `¡Dataset subido y procesado con éxito!`,
                 { 
                     duration: 6000,
                     // Magia de estilos para el Toast
@@ -50,7 +57,11 @@ export default function DatasetUploader() {
             );
             setFile(null);
         },
+        onError: (error) => {
+            toast.error(`Error: ${error.message}`);
+        }
     });
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // si seleciono
         const selectedFile = e.target.files?.[0];
@@ -65,12 +76,9 @@ export default function DatasetUploader() {
         }
     }
 
-
-
-
     //manejador del envio
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault();
 
         //si no hay archivo
         if (!file) {
@@ -82,8 +90,9 @@ export default function DatasetUploader() {
         formData.append("file", file);
 
         //agregamos la mutacion
-        mutate(formData)
+        mutate(formData);
     }
+
     return (
         // Fondo oscuro semitransparente con borde sutil
         <div className="max-w-xl mx-auto mt-12 bg-zinc-900/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-zinc-800">
@@ -95,13 +104,13 @@ export default function DatasetUploader() {
                         {metrics ? "Resumen de Ingesta" : "Ingesta de Datos Territoriales"}
                     </h2>
                     <p className="text-zinc-400 text-sm mt-1">
-                        {metrics ? "El archivo ha sido validado en memoria correctamente." : "Sube tu dataset estructurado para iniciar el proceso"}
+                        {metrics ? "El archivo ha sido validado en memoria y procesado correctamente." : "Sube tu dataset estructurado para iniciar el proceso"}
                     </p>
                 </div>
                 {/* Botón para reiniciar y subir otro archivo si ya terminamos */}
                 {metrics && (
                     <button 
-                        onClick={() => { setMetrics(null); setFile(null); }}
+                        onClick={() => { setMetrics(null); setFile(null); setDatasetId(null); }}
                         className="text-xs text-blue-400 hover:text-blue-300 font-medium px-3 py-1.5 rounded-lg border border-blue-500/20 hover:bg-blue-500/10 transition-colors"
                     >
                         Subir otro archivo
@@ -186,10 +195,22 @@ export default function DatasetUploader() {
                             <p className="text-2xl font-bold text-red-400">{metrics.invalid_records}</p>
                         </div>
                     </div>
+
+                    {/* 👇 AQUÍ ESTÁ EL BOTÓN DE VIAJE QUE TE FALTABA 👇 */}
+                    <div className="mt-6 pt-4 border-t border-zinc-800">
+                        <button 
+                            onClick={() => router.push(`/dashboard/analisis?datasetId=${datasetId}`)}
+                            className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"
+                        >
+                            Ver Gráfica de Análisis
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </button>
+                    </div>
+
                 </div>
             )}
         </div>
     );
-
-
 }
