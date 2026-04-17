@@ -1,60 +1,64 @@
 'use client'
 import { ZoneItem } from '@/app/schemas/zones';
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { useState } from 'react';
 
-interface ZonasChartProps {
+interface ZonasListProps {
   data: ZoneItem[];
 }
 
-// Colores un poco más vibrantes para que resalten sobre fondo oscuro
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
+const PAGE_SIZE = 10;
 
-export default function ZonasChart({ data }: ZonasChartProps) {
+export default function ZonasList({ data }: ZonasListProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+
   if (!data || data.length === 0) {
     return <div className="p-4 text-center text-zinc-500">No hay datos de zonas disponibles.</div>;
   }
 
+  const totalPages = Math.ceil(data.length / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = data.slice(start, start + PAGE_SIZE);
+
   return (
-    // Quitamos bg-white y agregamos h-[450px] real
-    <div className="w-full h-112.5 flex flex-col items-center justify-center">
-      <h2 className="text-xl font-bold text-cyan-400 mb-6 text-center">
-        Distribución por Departamento
-      </h2>
-      
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={90}
-            outerRadius={140}
-            paddingAngle={3}
-            dataKey="record_count"
-            nameKey="name"
-            stroke="none" // Quita el borde blanco entre los pedazos de la dona
-            label={{ fill: '#e4e4e7', fontSize: 12 }} // Letras de las líneas en gris claro
+    <div className="w-full max-w-lg">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-cyan-400">Zonas disponibles</h2>
+        <span className="text-sm text-zinc-400">{data.length} zonas en total</span>
+      </div>
+
+      <ul className="flex flex-col gap-2">
+        {pageData.map((zone, index) => (
+          <li
+            key={index}
+            className="flex justify-between items-center p-3 bg-zinc-900 border border-zinc-800 rounded-lg"
           >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          
-          <Tooltip 
-            formatter={(value: any) => [`${value} registros`, 'Cantidad']}
-            // Ponemos el cuadrito flotante oscuro para que combine
-            contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#f4f4f5', borderRadius: '8px' }}
-            itemStyle={{ color: '#e4e4e7' }}
-          />
-          
-          <Legend 
-            verticalAlign="bottom" 
-            height={36} 
-            // Ponemos el texto de la leyenda en gris claro
-            wrapperStyle={{ color: '#a1a1aa', fontSize: '14px', marginTop: '20px' }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+            <span className="text-white font-medium">{zone.name}</span>
+            <span className="text-xs text-blue-400 bg-blue-950 rounded-full px-3 py-1">
+              {zone.record_count} registros
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="flex justify-center items-center gap-4 mt-4">
+        <button
+          onClick={() => setCurrentPage(p => p - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30"
+        >
+          ← Anterior
+        </button>
+        <span className="text-sm text-zinc-400">
+          Página {currentPage} de {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(p => p + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30"
+        >
+          Siguiente →
+        </button>
+      </div>
     </div>
   );
 }
