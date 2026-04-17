@@ -92,7 +92,6 @@ export default function DatasetUploader() {
         //agregamos la mutacion
         mutate(formData);
     }
-
     return (
         // Fondo oscuro semitransparente con borde sutil
         <div className="max-w-xl mx-auto mt-12 bg-zinc-900/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-zinc-800">
@@ -202,7 +201,7 @@ export default function DatasetUploader() {
                             onClick={() => router.push(`/dashboard/analisis?datasetId=${datasetId}`)}
                             className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"
                         >
-                            Ver Gráfica de Análisis
+                            Ver Tabla de Registros
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>

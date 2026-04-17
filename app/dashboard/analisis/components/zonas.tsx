@@ -12,7 +12,11 @@ export default function ZonasList({ data }: ZonasListProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   if (!data || data.length === 0) {
-    return <div className="p-4 text-center text-zinc-500">No hay datos de zonas disponibles.</div>;
+    return (
+      <div className="flex justify-center items-center p-8">
+        <p className="text-zinc-500 text-center">No hay datos de zonas disponibles.</p>
+      </div>
+    );
   }
 
   const totalPages = Math.ceil(data.length / PAGE_SIZE);
@@ -20,7 +24,7 @@ export default function ZonasList({ data }: ZonasListProps) {
   const pageData = data.slice(start, start + PAGE_SIZE);
 
   return (
-    <div className="w-full max-w-lg">
+    <div className="w-full max-w-2xl mx-auto px-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-cyan-400">Zonas disponibles</h2>
         <span className="text-sm text-zinc-400">{data.length} zonas en total</span>
@@ -40,11 +44,11 @@ export default function ZonasList({ data }: ZonasListProps) {
         ))}
       </ul>
 
-      <div className="flex justify-center items-center gap-4 mt-4">
+      <div className="flex justify-center items-center gap-4 mt-6">
         <button
           onClick={() => setCurrentPage(p => p - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30"
+          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30 hover:bg-zinc-700 transition-colors"
         >
           ← Anterior
         </button>
@@ -54,7 +58,7 @@ export default function ZonasList({ data }: ZonasListProps) {
         <button
           onClick={() => setCurrentPage(p => p + 1)}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30"
+          className="px-4 py-2 text-sm bg-zinc-800 border border-zinc-700 rounded-lg text-white disabled:opacity-30 hover:bg-zinc-700 transition-colors"
         >
           Siguiente →
         </button>
