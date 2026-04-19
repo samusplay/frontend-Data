@@ -1,7 +1,8 @@
 import { getZones } from "@/app/actions/zones.actions";
 import Link from "next/link";
 import ZonasChart from "./components/zonas";
-
+import { MOCK_RANKING } from '@/app/mocks/ranking.mocks'; // Eliminar cuando el score ya esté
+import RankingTable from './components/ranking'; // Eliminar cuando el score ya esté
 
 export default async function AnalisisPage({
   searchParams,
@@ -73,6 +74,10 @@ export default async function AnalisisPage({
         ) : (
           <ZonasChart data={response.data} />
         )}
+      </div>
+        {/* Sección de Ranking — usando mock mientras el backend no está listo, cuando ya esté se eliminará*/} 
+      <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+        <RankingTable data={MOCK_RANKING} />
       </div>
     </div>
   );
