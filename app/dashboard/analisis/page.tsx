@@ -1,19 +1,32 @@
+"use client"; 
+
+
 import { getZones } from "@/app/actions/zones.actions";
+import { useDatasetStore } from "@/app/lib/useDatasetStore";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import IndicatorCards from "./components/IndicatorCards";
 import ZonasChart from "./components/zonas";
+import { useIndicators } from "./hooks/useIndicators";
 
 
-export default async function AnalisisPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ datasetId?: string }>; 
-}) {
-  // === 1. LEER LA URL con await
+
+export default function AnalisisPage() {
+  // === 1. LEER LA MEMORIA (ZUSTAND) ===
+ 
+  const datasetId = useDatasetStore((state) => state.datasetId);
+
   
-  const params = await searchParams;
-  const datasetId = params?.datasetId;
+  const { data: responseZones, isLoading: isZonesLoading } = useQuery({
+    queryKey: ["zones", datasetId],
+    queryFn: async () => await getZones(),
+    enabled: !!datasetId, 
+  });
+  //usamos nuestro hook personalizado
+  const { data: kpiData, isLoading: isKpiLoading, isError: isKpiError } = useIndicators(datasetId);
 
-  // === 2. EL CANDADO ===
+
+  // === 3. EL CANDADO ===
   if (!datasetId) {
     return (
       <div className="w-full max-w-4xl mx-auto">
@@ -48,11 +61,9 @@ export default async function AnalisisPage({
     );
   }
 
-  // === 3. LA PUERTA ABIERTA ===
-  const response = await getZones();
-
+  // === 4. LA PUERTA ABIERTA ===
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto"> {/* Amplié un poco el max-w para las 4 tarjetas */}
       <div className="mb-8 border-b border-zinc-800 pb-4">
         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
           Transformación y Análisis
@@ -65,13 +76,31 @@ export default async function AnalisisPage({
         </p>
       </div>
 
-      <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
-        {!response.succcess || !response.data ? (
+      {/*  LAS TARJETAS KPI  */}
+
+      {isKpiLoading ? (
+        <div className="flex justify-center items-center py-12 mt-8 border border-zinc-800 rounded-xl bg-zinc-900/50">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-zinc-400">Calculando métricas...</span>
+        </div>
+      ) : isKpiError || !kpiData ? (
+        <div className="mt-8 p-6 border border-dashed rounded-xl border-zinc-700 bg-zinc-900/50 flex flex-col items-center justify-center">
+           <p className="text-zinc-400 font-medium">Métricas no disponibles</p>
+        </div>
+      ) : (
+        <IndicatorCards data={kpiData} />
+      )}
+      
+      
+      <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 mt-8">
+        {isZonesLoading ? (
+           <p className="text-zinc-500 text-center py-10 animate-pulse">Cargando mapa de zonas...</p>
+        ) : !responseZones?.succcess || !responseZones?.data ? (
           <p className="text-red-400 text-center py-10">
-            Error: {response.error || "No hay datos"}
+            Error: {responseZones?.error || "No hay datos"}
           </p>
         ) : (
-          <ZonasChart data={response.data} />
+          <ZonasChart data={responseZones.data} />
         )}
       </div>
     </div>

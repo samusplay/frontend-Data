@@ -1,6 +1,7 @@
 "use client";
 
 import { processFilePipeline } from "@/app/actions/pipeline.action";
+import { useDatasetStore } from "@/app/lib/useDatasetStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,9 +15,9 @@ export default function DatasetUploader() {
     const [file, setFile] = useState<File | null>(null);
     //use state tarjetas info cabeceras
     const [metrics, setMetrics] = useState<UploadMetrics | null>(null);
-    //guardaremos el id
-    const [datasetId, setDatasetId] = useState<string | null>(null);
 
+    //guardaremos el id con zustand
+    const setGlobalDatasetId=useDatasetStore((state)=>state.setDatasetId)
     //manejar el estado de la peticion
     const { mutate, isPending } = useMutation({
         //llamamos al server action
@@ -29,13 +30,10 @@ export default function DatasetUploader() {
             return response;
         },
         onSuccess: (data) => {
-            //metricas
-            if (data?.metrics) {
-                setMetrics(data.metrics);
-            }
-            //comprobante
-            if (data?.datasetId) {
-                setDatasetId(data.datasetId);
+            if(data?.metrics)setMetrics(data.metrics);
+            if(data?.datasetId){
+                //usamos zustand
+                setGlobalDatasetId(data.datasetId)
             }
             toast.success(
                 `¡Dataset subido y procesado con éxito!`,
@@ -109,7 +107,11 @@ export default function DatasetUploader() {
                 {/* Botón para reiniciar y subir otro archivo si ya terminamos */}
                 {metrics && (
                     <button 
-                        onClick={() => { setMetrics(null); setFile(null); setDatasetId(null); }}
+                        onClick={() => { 
+                            setMetrics(null); 
+                            setFile(null); 
+                            //cambia con zustand
+                            setGlobalDatasetId(null); }}
                         className="text-xs text-blue-400 hover:text-blue-300 font-medium px-3 py-1.5 rounded-lg border border-blue-500/20 hover:bg-blue-500/10 transition-colors"
                     >
                         Subir otro archivo
@@ -198,7 +200,7 @@ export default function DatasetUploader() {
                     {/* 👇 AQUÍ ESTÁ EL BOTÓN DE VIAJE QUE TE FALTABA 👇 */}
                     <div className="mt-6 pt-4 border-t border-zinc-800">
                         <button 
-                            onClick={() => router.push(`/dashboard/analisis?datasetId=${datasetId}`)}
+                            onClick={()=>router.push(`/dashboard/analisis`)}
                             className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"
                         >
                             Ver Tabla de Registros
