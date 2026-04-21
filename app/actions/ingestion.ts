@@ -3,8 +3,6 @@
 import { apiClient } from "../lib/apiClient";
 import { DatasetResponseSchema } from "../schemas/ingestion";
 
-
-
 export async function senDataIngesta(formData: FormData) {
     //extraemos el archivo
     const file = formData.get("file") as File | null;
