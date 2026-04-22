@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 
 import { getZones } from "@/app/actions/zones.actions";
@@ -7,20 +7,21 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import IndicatorCards from "./components/IndicatorCards";
 import ZonasChart from "./components/zonas";
+import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
 
 
 
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
- 
+
   const datasetId = useDatasetStore((state) => state.datasetId);
 
-  
+
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
     queryKey: ["zones", datasetId],
     queryFn: async () => await getZones(),
-    enabled: !!datasetId, 
+    enabled: !!datasetId,
   });
   //usamos nuestro hook personalizado
   const { data: kpiData, isLoading: isKpiLoading, isError: isKpiError } = useIndicators(datasetId);
@@ -85,22 +86,32 @@ export default function AnalisisPage() {
         </div>
       ) : isKpiError || !kpiData ? (
         <div className="mt-8 p-6 border border-dashed rounded-xl border-zinc-700 bg-zinc-900/50 flex flex-col items-center justify-center">
-           <p className="text-zinc-400 font-medium">Métricas no disponibles</p>
+          <p className="text-zinc-400 font-medium">Métricas no disponibles</p>
         </div>
       ) : (
         <IndicatorCards data={kpiData} />
       )}
-      
-      
+
+
       <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 mt-8">
         {isZonesLoading ? (
-           <p className="text-zinc-500 text-center py-10 animate-pulse">Cargando mapa de zonas...</p>
+          <p className="text-zinc-500 text-center py-10 animate-pulse">Cargando mapa de zonas...</p>
         ) : !responseZones?.succcess || !responseZones?.data ? (
           <p className="text-red-400 text-center py-10">
             Error: {responseZones?.error || "No hay datos"}
           </p>
         ) : (
-          <ZonasChart data={responseZones.data} />
+          <>
+            {/* Tabla de Zonas */}
+            <ZonasChart data={responseZones.data} />
+
+            <div className="mt-12 pt-8 border-t border-zinc-800">
+              <h2 className="text-xl font-semibold text-cyan-400 mb-6">
+                Análisis Visual (Top 5)
+              </h2>
+              <ZonasChartsCards data={responseZones.data} />
+            </div>
+          </>
         )}
       </div>
     </div>
