@@ -1,42 +1,49 @@
-import { GATEWAY_URL } from './config';
+import { GATEWAY_URL } from "./config";
 
-//imports que acepta api client
 type FetchOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  body?: any; 
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  body?: unknown;
   cache?: RequestCache;
   headers?: Record<string, string>;
+  baseUrl?: string;
 };
 
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {
-  const url = `${GATEWAY_URL}${endpoint}`;
-  
-  // Verificamos si el body es un FormData (para archivos)
+  const url = `${options.baseUrl || GATEWAY_URL}${endpoint}`;
   const isFormData = options.body instanceof FormData;
 
   const config: RequestInit = {
-    method: options.method || 'GET',
-    // Si NO es FormData, forzamos JSON. Si es FormData, dejamos que fetch ponga el header automáticamente.
-    headers: isFormData ? {} : { 'Content-Type': 'application/json' },
-    cache: options.cache || 'no-store',
+    method: options.method || "GET",
+    headers: isFormData
+      ? { ...(options.headers || {}) }
+      : { "Content-Type": "application/json", ...(options.headers || {}) },
+    cache: options.cache || "no-store",
   };
 
   if (options.body) {
-    // Si es FormData, lo pasamos crudo. Si es un objeto normal, lo hacemos string.
-    config.body = isFormData ? options.body : JSON.stringify(options.body);
+if (options.body) {
+  config.body = isFormData
+    ? (options.body as BodyInit)
+    : typeof options.body === "string"
+      ? options.body
+      : JSON.stringify(options.body);
+}
   }
 
   const response = await fetch(url, config);
 
-  // Intentamos extraer el JSON de error si existe, para mensajes más claros
   if (!response.ok) {
     let errorMessage = `Error en el servidor: ${response.status}`;
+
     try {
       const errorData = await response.json();
-      if (errorData.detail) errorMessage = errorData.detail;
-    } catch (e) {
-      // Si no es JSON, dejamos el mensaje genérico
+      if (errorData.detail) {
+        errorMessage = errorData.detail;
+      }
+    } catch {
+      // Si no es JSON, dejamos el mensaje generico.
     }
+
     throw new Error(errorMessage);
   }
 
