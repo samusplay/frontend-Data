@@ -20,38 +20,44 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-2 grow">
-        <Link 
-          href="/dashboard" 
-          className={`px-4 py-3 rounded-xl font-medium transition-all ${
-            isActive("/dashboard") 
-              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20" 
+        <Link
+          href="/dashboard"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard")
+              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
               : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-          }`}
+            }`}
         >
           Inicio
         </Link>
-        <Link 
-          href="/dashboard/ingesta" 
-          className={`px-4 py-3 rounded-xl font-medium transition-all ${
-            isActive("/dashboard/ingesta") 
-              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20" 
+        <Link
+          href="/dashboard/ingesta"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard/ingesta")
+              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
               : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-          }`}
+            }`}
         >
           1. Ingesta de Datos
         </Link>
-        <Link 
-          href="/dashboard/analisis" 
-          className={`px-4 py-3 rounded-xl font-medium transition-all ${
-            isActive("/dashboard/analisis") 
-              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20" 
+        <Link
+          href="/dashboard/analisis"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard/analisis")
+              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
               : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-          }`}
+            }`}
         >
           2. Transformación y Análisis
         </Link>
+        <Link
+          href="/dashboard/configuracion"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard/configuracion")   // ← corregido
+              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
+              : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+            }`}
+        >
+          3. Configuracion
+        </Link>
       </nav>
-      
+
       <SystemStatus />
     </aside>
   );

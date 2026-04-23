@@ -22,7 +22,7 @@ export type SaveProfileResult =
 // 🔥 GET PROFILES
 export async function getProfiles(): Promise<ProfilesResult> {
   try {
-    const rawProfiles = await apiClient("/api/v1/profiles/", {
+    const rawProfiles = await apiClient("/api/v1/configuration/profiles/", {
       method: "GET",
     });
 
@@ -79,7 +79,7 @@ export async function saveProfile(
     );
 
     for (const profile of activeProfiles) {
-      await apiClient(`/api/v1/profiles/${profile.id}`, {
+      await apiClient(`/api/v1/configuration/profiles/${profile.id}`, {
         method: "PUT",
         body: {
           nombre_perfil: profile.nombre_perfil,
@@ -92,7 +92,7 @@ export async function saveProfile(
     }
 
     // 🔥 3. Crear nuevo perfil
-    const rawProfile = await apiClient("/api/v1/profiles/", {
+    const rawProfile = await apiClient("/api/v1/configuration/profiles/", {
       method: "POST",
       body: parsedInput.data,
     });

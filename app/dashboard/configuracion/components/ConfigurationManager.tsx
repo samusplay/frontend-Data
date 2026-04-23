@@ -8,6 +8,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
+import ProfileNameInput from "./ProfileNameInput";
 
 type ConfigurationManagerProps = {
   initialProfiles: BusinessProfile[];
@@ -24,12 +25,14 @@ export default function ConfigurationManager({
   const [poblacion, setPoblacion] = useState(0.4);
   const [ingresos, setIngresos] = useState(0.3);
   const [competencia, setCompetencia] = useState(0.3);
+  const [nombrePerfil, setNombrePerfil] = useState("");
 
   const total = Number((poblacion + ingresos + competencia).toFixed(2));
+  const isValid = total === 1 && nombrePerfil.trim().length > 0;
 
   const handleSave = () => {
     const payload = {
-      nombre_perfil: "Perfil Activo",
+      nombre_perfil: nombrePerfil.trim(),
       peso_poblacion: poblacion,
       peso_ingresos: ingresos,
       peso_competencia: competencia,
@@ -40,8 +43,7 @@ export default function ConfigurationManager({
 
     if (!validation.success) {
       toast.error(
-        validation.error.issues[0]?.message ||
-          "La configuración no es válida"
+        validation.error.issues[0]?.message || "La configuración no es válida"
       );
       return;
     }
@@ -55,8 +57,7 @@ export default function ConfigurationManager({
       }
 
       toast.success("Configuración actualizada correctamente");
-
-      // 🔥 REFRESH PARA TRAER DATOS NUEVOS DESDE EL SERVER
+      setNombrePerfil("");
       router.refresh();
     });
   };
@@ -78,6 +79,8 @@ export default function ConfigurationManager({
           <h2 className="mb-6 text-xl font-semibold text-white">
             Pesos del perfil activo
           </h2>
+
+          <ProfileNameInput value={nombrePerfil} onChange={setNombrePerfil} />
 
           <SliderField
             label="Población"
@@ -115,11 +118,18 @@ export default function ConfigurationManager({
                 La suma de los pesos debe ser igual a 1.0
               </p>
             )}
+
+            {/* Aviso si falta el nombre */}
+            {total === 1 && nombrePerfil.trim().length === 0 && (
+              <p className="mt-3 text-sm text-amber-400">
+                Ingresa un nombre para el perfil antes de guardar.
+              </p>
+            )}
           </div>
 
           <button
             onClick={handleSave}
-            disabled={total !== 1 || isPending}
+            disabled={!isValid || isPending}
             className="mt-6 inline-flex items-center justify-center rounded-xl border border-blue-700 bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
           >
             {isPending ? "Guardando..." : "Guardar Perfil"}
@@ -189,9 +199,7 @@ function SliderField({ label, value, onChange, accent }: SliderFieldProps) {
   return (
     <div className="mb-6">
       <div className="mb-2 flex items-center justify-between">
-        <label className="text-sm font-medium text-zinc-300">
-          {label}
-        </label>
+        <label className="text-sm font-medium text-zinc-300">{label}</label>
         <span className="text-sm font-mono text-zinc-400">
           {value.toFixed(1)}
         </span>
@@ -203,9 +211,7 @@ function SliderField({ label, value, onChange, accent }: SliderFieldProps) {
           max="1"
           step="0.1"
           value={value}
-          onChange={(event) =>
-            onChange(Number(event.target.value))
-          }
+          onChange={(event) => onChange(Number(event.target.value))}
           className={`h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-800 ${accent}`}
         />
       </div>
