@@ -43,7 +43,7 @@ export default function ZoneComparator({ comparisonData }: ZoneComparatorProps) 
         </div>
         <h3 className="text-xl font-medium text-zinc-300 mb-2">Esperando contrincantes...</h3>
         <p className="text-zinc-500 text-center max-w-sm">
-          Selecciona al menos 2 zonas en el panel izquierdo para visualizar su contraste analítico.
+          Selecciona al menos 2 zonas del ranking para iniciar la comparación.
         </p>
       </div>
     );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { getZones } from "@/app/actions/zones.actions";
 import { compareZonesAction } from "@/app/actions/compare.actions";
 import toast from "react-hot-toast";
@@ -12,9 +12,8 @@ import ZoneComparator from "./components/ZoneComparator";
 export default function ComparadorPage() {
   const [selectedZones, setSelectedZones] = useState<string[]>([]);
   const [comparisonData, setComparisonData] = useState<any[]>([]);
-  const [isComparing, setIsComparing] = useState(false);
 
-  // Tarea 2: Traer las zonas disponibles
+  // Tarea 2: Traer las zonas disponibles con React Query (useQuery)
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
     queryKey: ["zones_for_comparison"],
     queryFn: async () => await getZones(),
@@ -22,11 +21,28 @@ export default function ComparadorPage() {
 
   const availableZones = responseZones?.data || [];
 
+  // Tarea 4: Integración con useMutation de React Query para llamar al BFF
+  const { mutate: runComparison, isPending: isComparing } = useMutation({
+    mutationFn: (zoneCodes: string[]) => compareZonesAction(zoneCodes),
+    onSuccess: (res) => {
+      if (res.success && res.data) {
+        setComparisonData(res.data);
+        toast.success("Comparación completada");
+      } else {
+        toast.error(res.error || "Fallo en la comparación");
+      }
+    },
+    onError: () => {
+      toast.error("Ocurrió un error al comparar las zonas.");
+    },
+  });
+
   const handleToggleZone = (zoneCode: string) => {
     setSelectedZones((prev) => {
       if (prev.includes(zoneCode)) {
         return prev.filter((code) => code !== zoneCode);
       } else {
+        // CA 1: Límite máximo de 4 zonas
         if (prev.length >= 4) {
           toast.error("Máximo 4 zonas permitidas para no saturar la visualización");
           return prev;
@@ -36,22 +52,9 @@ export default function ComparadorPage() {
     });
   };
 
-  // Tarea 4: Integración para llamar al BFF y obtener los datos para comparar
-  const handleCompare = async () => {
+  const handleCompare = () => {
     if (selectedZones.length < 2) return;
-    
-    setIsComparing(true);
-    // Nota: Aunque usamos Server Actions, el principio es el mismo que llamar al BFF directo.
-    // Más adelante podemos cambiarlo a usar react-query mutacion si se requiere estrictamente.
-    const res = await compareZonesAction(selectedZones);
-    setIsComparing(false);
-
-    if (res.success && res.data) {
-      setComparisonData(res.data);
-      toast.success("Comparación completada");
-    } else {
-      toast.error(res.error || "Fallo en la comparación");
-    }
+    runComparison(selectedZones);
   };
 
   return (
@@ -61,13 +64,13 @@ export default function ComparadorPage() {
           Comparador Funcional
         </h1>
         <p className="text-zinc-400 mt-2">
-          Selecciona de 2 a 4 zonas para contrastar sus indicadores y tomar decisiones (HU-18).
+          Selecciona de 2 a 4 zonas para contrastar sus indicadores y tomar decisiones.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Tarea 2: Componente Selector de Zonas */}
-        <ZoneSelector 
+        {/* Tarea 2: Componente Selector de Zonas (Multi-Select) */}
+        <ZoneSelector
           availableZones={availableZones}
           selectedZones={selectedZones}
           onToggleZone={handleToggleZone}

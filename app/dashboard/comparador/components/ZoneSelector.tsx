@@ -1,14 +1,12 @@
-import React from 'react';
-
 interface Zone {
-  zone_code: string;
-  zone_name: string;
+  name: string;
+  record_count: number;
 }
 
 interface ZoneSelectorProps {
   availableZones: Zone[];
   selectedZones: string[];
-  onToggleZone: (zoneCode: string) => void;
+  onToggleZone: (zoneName: string) => void;
   isLoading: boolean;
   onCompareClick: () => void;
   isComparing: boolean;
@@ -33,13 +31,13 @@ export default function ZoneSelector({
           <p className="text-sm text-zinc-500">No hay zonas procesadas.</p>
         ) : (
           availableZones.map((zone) => {
-            const isSelected = selectedZones.includes(zone.zone_code);
+            const isSelected = selectedZones.includes(zone.name);
             const isDisabled = !isSelected && selectedZones.length >= 4;
             
             return (
               <button
-                key={zone.zone_code}
-                onClick={() => onToggleZone(zone.zone_code)}
+                key={zone.name}
+                onClick={() => onToggleZone(zone.name)}
                 disabled={isDisabled}
                 className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm flex items-center justify-between
                   ${isSelected 
@@ -49,7 +47,7 @@ export default function ZoneSelector({
                       : 'bg-zinc-800/50 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-purple-500/50'
                   }`}
               >
-                <span className="truncate">{zone.zone_name}</span>
+                <span className="truncate">{zone.name}</span>
                 {isSelected && (
                   <div className="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.8)]"></div>
                 )}
