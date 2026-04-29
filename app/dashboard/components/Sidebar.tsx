@@ -56,6 +56,15 @@ export default function Sidebar() {
         >
           3. Configuracion
         </Link>
+        <Link
+          href="/dashboard/comparador"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard/comparador")
+              ? "bg-purple-600/20 text-purple-400 border border-purple-500/30"
+              : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+            }`}
+        >
+          4. Comparador Funcional
+        </Link>
       </nav>
 
       <SystemStatus />
