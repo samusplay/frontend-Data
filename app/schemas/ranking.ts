@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const RankingItemSchema = z.object({
   zone_code: z.string(),
   score: z.number(),
-  rank: z.number()
+  rank: z.number(),
+  zone_name: z.string().optional()
 });
 
 export const RankingResponseSchema = z.object({

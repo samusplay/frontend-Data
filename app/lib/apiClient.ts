@@ -38,10 +38,13 @@ if (options.body) {
     try {
       const errorData = await response.json();
       if (errorData.detail) {
-        errorMessage = errorData.detail;
+        // 👈 MAGIA: Si el detail es un objeto/arreglo (como los de FastAPI), lo convertimos a texto legible
+        errorMessage = typeof errorData.detail === 'string' 
+          ? errorData.detail 
+          : JSON.stringify(errorData.detail);
       }
     } catch {
-      // Si no es JSON, dejamos el mensaje generico.
+      // Si no es JSON, dejamos el mensaje genérico.
     }
 
     throw new Error(errorMessage);

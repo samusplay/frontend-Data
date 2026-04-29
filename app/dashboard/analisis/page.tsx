@@ -1,43 +1,81 @@
 "use client";
 
-import RankingTable from './components/RankingTable';
-import { useRanking } from './hooks/useRanking';
+import { getZonesWithMetrics } from "@/app/actions/zones-metrics.actions";
 import { getZones } from "@/app/actions/zones.actions";
 import { useDatasetStore } from "@/app/lib/useDatasetStore";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import ExecuteScoringForm from "./components/ExecuteScoringForm";
 import IndicatorCards from "./components/IndicatorCards";
+import RankingTable from "./components/RankingTable";
 import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
+import { useRanking } from "./hooks/useRanking";
 
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
   const datasetId = useDatasetStore((state) => state.datasetId);
 
+  // === 2. ESTADO DE MONTAJE (Para evitar Hydration Mismatch) ===
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // === 3. LLAMADAS A LA API ===
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
     queryKey: ["zones", datasetId],
     queryFn: async () => await getZones(),
     enabled: !!datasetId,
   });
 
+  const { data: metricsResponse } = useQuery({
+    queryKey: ["zones-metrics", datasetId],
+    queryFn: async () => await getZonesWithMetrics(datasetId!),
+    enabled: !!datasetId,
+  });
+
   const { data: kpiData, isLoading: isKpiLoading, isError: isKpiError } = useIndicators(datasetId);
 
-  // === HOOK DE RANKING ===
   const {
     data: rankingResponse,
     isLoading: isRankingLoading,
-    isError: isRankingError
+    isError: isRankingError,
   } = useRanking(datasetId);
 
-  const rankingData = rankingResponse?.success ? rankingResponse.data : [];
+  // === 4. PREPARACIÓN DE DATOS ===
+  const rawRankingData = rankingResponse?.data || [];
+  const zonesData = (responseZones?.data || []) as any[];
+  const metricsData = (metricsResponse?.data || []) as any[];
 
-  // === 3. EL CANDADO ===
+  const rankingData = rawRankingData.map((item: any) => {
+    const zonaEncontrada = metricsData.find((z: any) =>
+      String(z.zone_code) === String(item.zone_code)
+    );
+    return {
+      ...item,
+      zone_name: zonaEncontrada?.zone_name || item.zone_code,
+    };
+  });
+
+
+
+  if (!isMounted) {
+    return <div className="p-10 text-center text-zinc-500">Recuperando sesión...</div>;
+  }
+  console.log("rankingResponse:", rankingResponse);
+  console.log("rawRankingData:", rawRankingData);
+  console.log("rankingData:", rankingData);
+
+  // === 5. EL CANDADO ===
   if (!datasetId) {
     return (
       <div className="w-full max-w-4xl mx-auto">
         <div className="mb-8 border-b border-zinc-800 pb-4">
-          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
             Transformación y Análisis
           </h1>
           <p className="text-zinc-400 mt-2">
@@ -67,11 +105,11 @@ export default function AnalisisPage() {
     );
   }
 
-  // === 4. LA PUERTA ABIERTA ===
+  // === 6. LA PUERTA ABIERTA ===
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="mb-8 border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
           Transformación y Análisis
         </h1>
         <p className="text-zinc-400 mt-2 flex items-center gap-2">
@@ -97,7 +135,7 @@ export default function AnalisisPage() {
       )}
 
       {/* ZONAS Y ANÁLISIS VISUAL */}
-      <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 mt-8">
+      <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 mt-8 shadow-lg shadow-black/20">
         {isZonesLoading ? (
           <p className="text-zinc-500 text-center py-10 animate-pulse">Cargando mapa de zonas...</p>
         ) : !responseZones?.succcess || !responseZones?.data ? (
@@ -108,7 +146,7 @@ export default function AnalisisPage() {
           <>
             <ZonasChart data={responseZones.data} />
             <div className="mt-12 pt-8 border-t border-zinc-800">
-              <h2 className="text-xl font-semibold text-cyan-400 mb-6">
+              <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 mb-6">
                 Análisis Visual (Top 5)
               </h2>
               <ZonasChartsCards data={responseZones.data} />
@@ -118,7 +156,18 @@ export default function AnalisisPage() {
       </div>
 
       {/* RANKING */}
-      <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+      <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 shadow-lg shadow-black/20">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-zinc-800/50 pb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
+              Ranking de Zonas
+            </h2>
+            <p className="text-sm text-zinc-400 mt-1">Calcula el score en base a los pesos configurados</p>
+          </div>
+          {/* ← metricsData en lugar de zonesData */}
+          <ExecuteScoringForm datasetId={datasetId} zonesData={metricsData} />
+        </div>
+
         <RankingTable
           data={rankingData}
           isLoading={isRankingLoading}
