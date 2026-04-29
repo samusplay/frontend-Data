@@ -1,6 +1,7 @@
 "use client";
 
-
+import RankingTable from './components/RankingTable';
+import { useRanking } from './hooks/useRanking';
 import { getZones } from "@/app/actions/zones.actions";
 import { useDatasetStore } from "@/app/lib/useDatasetStore";
 import { useQuery } from "@tanstack/react-query";
@@ -10,22 +11,26 @@ import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
 
-
-
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
-
   const datasetId = useDatasetStore((state) => state.datasetId);
-
 
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
     queryKey: ["zones", datasetId],
     queryFn: async () => await getZones(),
     enabled: !!datasetId,
   });
-  //usamos nuestro hook personalizado
+
   const { data: kpiData, isLoading: isKpiLoading, isError: isKpiError } = useIndicators(datasetId);
 
+  // === HOOK DE RANKING ===
+  const {
+    data: rankingResponse,
+    isLoading: isRankingLoading,
+    isError: isRankingError
+  } = useRanking(datasetId);
+
+  const rankingData = rankingResponse?.success ? rankingResponse.data : [];
 
   // === 3. EL CANDADO ===
   if (!datasetId) {
@@ -64,7 +69,7 @@ export default function AnalisisPage() {
 
   // === 4. LA PUERTA ABIERTA ===
   return (
-    <div className="w-full max-w-6xl mx-auto"> {/* Amplié un poco el max-w para las 4 tarjetas */}
+    <div className="w-full max-w-6xl mx-auto">
       <div className="mb-8 border-b border-zinc-800 pb-4">
         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
           Transformación y Análisis
@@ -77,8 +82,7 @@ export default function AnalisisPage() {
         </p>
       </div>
 
-      {/*  LAS TARJETAS KPI  */}
-
+      {/* TARJETAS KPI */}
       {isKpiLoading ? (
         <div className="flex justify-center items-center py-12 mt-8 border border-zinc-800 rounded-xl bg-zinc-900/50">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
@@ -92,7 +96,7 @@ export default function AnalisisPage() {
         <IndicatorCards data={kpiData} />
       )}
 
-
+      {/* ZONAS Y ANÁLISIS VISUAL */}
       <div className="p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 mt-8">
         {isZonesLoading ? (
           <p className="text-zinc-500 text-center py-10 animate-pulse">Cargando mapa de zonas...</p>
@@ -102,9 +106,7 @@ export default function AnalisisPage() {
           </p>
         ) : (
           <>
-            {/* Tabla de Zonas */}
             <ZonasChart data={responseZones.data} />
-
             <div className="mt-12 pt-8 border-t border-zinc-800">
               <h2 className="text-xl font-semibold text-cyan-400 mb-6">
                 Análisis Visual (Top 5)
@@ -113,6 +115,15 @@ export default function AnalisisPage() {
             </div>
           </>
         )}
+      </div>
+
+      {/* RANKING */}
+      <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+        <RankingTable
+          data={rankingData}
+          isLoading={isRankingLoading}
+          isError={isRankingError}
+        />
       </div>
     </div>
   );

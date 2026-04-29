@@ -1,13 +1,19 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-//definimos la interfaz
 interface DatasetState {
   datasetId: string | null;
   setDatasetId: (id: string | null) => void;
 }
 
-//hook global usando zustand
-export const useDatasetStore=create<DatasetState>((set)=>({
-    datasetId:null,
-    setDatasetId:(id)=>set({datasetId:id}) //actualiza el id
-}))
+export const useDatasetStore = create<DatasetState>()(
+  persist(
+    (set) => ({
+      datasetId: null,
+      setDatasetId: (id) => set({ datasetId: id })
+    }),
+    {
+      name: 'dataset-storage', // nombre en localStorage
+    }
+  )
+)
