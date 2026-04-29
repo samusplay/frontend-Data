@@ -41,15 +41,15 @@ export default function ZoneSelector({
                 disabled={isDisabled}
                 className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm flex items-center justify-between
                   ${isSelected 
-                    ? 'bg-purple-900/30 border border-purple-500 text-purple-300' 
+                    ? 'bg-blue-900/30 border border-blue-500 text-blue-300' 
                     : isDisabled
                       ? 'bg-zinc-900 border border-zinc-800 text-zinc-600 cursor-not-allowed opacity-50'
-                      : 'bg-zinc-800/50 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-purple-500/50'
+                      : 'bg-zinc-800/50 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-blue-500/50'
                   }`}
               >
                 <span className="truncate">{zone.name}</span>
                 {isSelected && (
-                  <div className="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.8)]"></div>
+                  <div className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
                 )}
               </button>
             )
@@ -63,7 +63,7 @@ export default function ZoneSelector({
         className={`w-full mt-6 py-3 rounded-xl font-medium transition-all
           ${selectedZones.length < 2 || isComparing
             ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 shadow-lg shadow-purple-900/20'
+            : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:opacity-90 shadow-lg shadow-blue-900/20'
           }`}
       >
         {isComparing ? 'Analizando...' : 'Comparar Zonas'}

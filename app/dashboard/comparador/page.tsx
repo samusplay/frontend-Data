@@ -60,7 +60,7 @@ export default function ComparadorPage() {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8">
       <div className="border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
           Comparador Funcional
         </h1>
         <p className="text-zinc-400 mt-2">

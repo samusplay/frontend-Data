@@ -16,21 +16,17 @@ interface ZoneComparatorProps {
 
 export default function ZoneComparator({ comparisonData }: ZoneComparatorProps) {
   // Preparar datos para RadarChart
-  const formatRadarData = () => {
-    if (!comparisonData.length) return [];
-    
-    const metrics = ["ingresos", "poblacion", "competencia", "score_final"];
-    return metrics.map(metric => {
-      const dataPoint: any = { metric: metric.toUpperCase() };
-      comparisonData.forEach(zone => {
-        dataPoint[zone.zone_name] = zone[metric];
-      });
-      return dataPoint;
-    });
+  const getRadarData = (data: any[]) => {
+    return [
+      { metric: 'INGRESOS', ...data.reduce((acc, curr) => ({ ...acc, [curr.zone_name]: curr.ingresos_norm }), {}) },
+      { metric: 'POBLACION', ...data.reduce((acc, curr) => ({ ...acc, [curr.zone_name]: curr.poblacion_norm }), {}) },
+      { metric: 'COMPETENCIA', ...data.reduce((acc, curr) => ({ ...acc, [curr.zone_name]: curr.competencia_norm }), {}) },
+      { metric: 'SCORE_FINAL', ...data.reduce((acc, curr) => ({ ...acc, [curr.zone_name]: curr.score_norm }), {}) },
+    ];
   };
 
-  const radarData = formatRadarData();
-  const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042"];
+  const radarData = getRadarData(comparisonData);
+  const colors = ["#3b82f6", "#06b6d4", "#10b981", "#f59e0b"]; // Azul, Cian, Verde, Ámbar
 
   // CA 4: Estado vacío
   if (comparisonData.length === 0) {
@@ -92,7 +88,7 @@ export default function ZoneComparator({ comparisonData }: ZoneComparatorProps) 
 
       {/* Radar Chart (Spider Chart) */}
       <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 h-[500px] flex flex-col">
-        <h3 className="text-lg font-medium text-zinc-300 mb-6 pl-2 border-l-2 border-pink-500">
+        <h3 className="text-lg font-medium text-zinc-300 mb-6 pl-2 border-l-2 border-blue-500">
           Contraste Multidimensional
         </h3>
         <div className="flex-1">
