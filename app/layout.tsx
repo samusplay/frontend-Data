@@ -31,8 +31,9 @@ export default function RootLayout({
     <html
       lang="es" // Cambiamos a español
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {/* 3. Envolvemos toda la aplicación para inyectar TanStack Query */}
         <Providers>
           {children}

@@ -120,3 +120,61 @@ export async function saveProfile(
     };
   }
 }
+
+// 🔥 UPDATE PROFILE
+export async function updateProfile(
+  id: number,
+  input: BusinessProfileInput
+): Promise<SaveProfileResult> {
+  const parsedInput = BusinessProfileInputSchema.safeParse(input);
+
+  if (!parsedInput.success) {
+    return {
+      success: false,
+      error: parsedInput.error.issues[0]?.message || "Los datos del perfil no son válidos",
+    };
+  }
+
+  try {
+    const rawProfile = await apiClient(`/api/v1/configuration/profiles/${id}`, {
+      method: "PUT",
+      body: parsedInput.data,
+    });
+
+    const validation = BusinessProfileSchema.safeParse(rawProfile);
+
+    if (!validation.success) {
+      return {
+        success: false,
+        error: "El servidor respondió con un formato inesperado",
+      };
+    }
+
+    revalidatePath("/dashboard/configuracion");
+    return { success: true, data: validation.data };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "No se pudo actualizar el perfil",
+    };
+  }
+}
+
+// 🔥 DELETE PROFILE
+export async function deleteProfile(id: number): Promise<{ success: true; id: number } | { success: false; error: string }> {
+  try {
+    await apiClient(`/api/v1/configuration/profiles/${id}`, {
+      method: "DELETE",
+    });
+
+    revalidatePath("/dashboard/configuracion");
+    return { success: true, id };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "No se pudo eliminar el perfil",
+    };
+  }
+}

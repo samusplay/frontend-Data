@@ -1,6 +1,6 @@
 "use client";
 
-import { saveProfile } from "@/app/actions/profiles.actions";
+import { saveProfile, updateProfile, deleteProfile } from "@/app/actions/profiles.actions";
 import {
   BusinessProfile,
   BusinessProfileInputSchema,
@@ -26,6 +26,7 @@ export default function ConfigurationManager({
   const [ingresos, setIngresos] = useState(0.3);
   const [competencia, setCompetencia] = useState(0.3);
   const [nombrePerfil, setNombrePerfil] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const total = Number((poblacion + ingresos + competencia).toFixed(2));
   const isValid = total === 1 && nombrePerfil.trim().length > 0;
@@ -49,15 +50,44 @@ export default function ConfigurationManager({
     }
 
     startTransition(async () => {
-      const result = await saveProfile(validation.data);
+      let result;
+      if (editingId) {
+        result = await updateProfile(editingId, validation.data);
+      } else {
+        result = await saveProfile(validation.data);
+      }
 
       if (!result.success) {
         toast.error(result.error);
         return;
       }
 
-      toast.success("Configuración actualizada correctamente");
+      toast.success(editingId ? "Perfil actualizado" : "Configuración actualizada correctamente");
       setNombrePerfil("");
+      setEditingId(null);
+      router.refresh();
+    });
+  };
+
+  const handleEdit = (profile: BusinessProfile) => {
+    setEditingId(profile.id);
+    setNombrePerfil(profile.nombre_perfil);
+    setPoblacion(profile.peso_poblacion);
+    setIngresos(profile.peso_ingresos);
+    setCompetencia(profile.peso_competencia);
+  };
+
+  const handleDelete = (id: number) => {
+    if (!confirm("¿Seguro que deseas eliminar este perfil?")) return;
+    
+    startTransition(async () => {
+      const result = await deleteProfile(id);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      if (editingId === id) setEditingId(null);
+      toast.success("Perfil eliminado");
       router.refresh();
     });
   };
@@ -127,13 +157,30 @@ export default function ConfigurationManager({
             )}
           </div>
 
-          <button
-            onClick={handleSave}
-            disabled={!isValid || isPending}
-            className="mt-6 inline-flex items-center justify-center rounded-xl border border-blue-700 bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
-          >
-            {isPending ? "Guardando..." : "Guardar Perfil"}
-          </button>
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={handleSave}
+              disabled={!isValid || isPending}
+              className="flex-1 inline-flex items-center justify-center rounded-xl border border-blue-700 bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
+            >
+              {isPending ? "Guardando..." : editingId ? "Actualizar Perfil" : "Guardar Perfil"}
+            </button>
+            {editingId && (
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setNombrePerfil("");
+                  setPoblacion(0.4);
+                  setIngresos(0.3);
+                  setCompetencia(0.3);
+                }}
+                disabled={isPending}
+                className="inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 px-5 py-3 font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
 
           {initialError && (
             <p className="mt-4 text-sm text-amber-400">
@@ -177,6 +224,22 @@ export default function ConfigurationManager({
                     <p>Población: {profile.peso_poblacion}</p>
                     <p>Ingresos: {profile.peso_ingresos}</p>
                     <p>Competencia: {profile.peso_competencia}</p>
+                  </div>
+                  <div className="mt-4 flex gap-3 border-t border-zinc-800 pt-3">
+                    <button
+                      onClick={() => handleEdit(profile)}
+                      disabled={isPending}
+                      className="text-xs font-medium text-blue-400 hover:text-blue-300 disabled:opacity-50"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(profile.id)}
+                      disabled={isPending}
+                      className="text-xs font-medium text-rose-400 hover:text-rose-300 disabled:opacity-50"
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 </article>
               ))}
