@@ -63,7 +63,7 @@ export default function Sidebar() {
               : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
             }`}
         >
-          3.Modulo de IA
+          4.Modulo de IA
         </Link>
       </nav>
 
