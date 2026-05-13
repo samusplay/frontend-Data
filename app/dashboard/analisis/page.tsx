@@ -11,6 +11,7 @@ import IndicatorCards from "./components/IndicatorCards";
 import RankingTable from "./components/RankingTable";
 import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
+import ActionPlanList from "./components/ActionPlanList";
 import { useIndicators } from "./hooks/useIndicators";
 import { useRanking } from "./hooks/useRanking";
 
@@ -20,10 +21,48 @@ export default function AnalisisPage() {
 
   // === 2. ESTADO DE MONTAJE (Para evitar Hydration Mismatch) ===
   const [isMounted, setIsMounted] = useState(false);
+  const [loadingIA, setLoadingIA] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+const [recommendations, setRecommendations] = useState<any[]>([]);
+
+ async function executeML() {
+
+  try {
+
+    setLoadingIA(true);
+
+    const response = await fetch(
+      `http://localhost:8000/api/v1/ml/execute/${datasetId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          strategy: "linear"
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("ML RESPONSE:", data);
+
+    setRecommendations(data.recommendations || []);
+
+  } catch (error) {
+
+    console.error("ERROR IA:", error);
+
+  } finally {
+
+    setLoadingIA(false);
+  }
+}
+
+useEffect(() => {
+  setIsMounted(true);
+}, []);
 
   // === 3. LLAMADAS A LA API ===
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
@@ -166,6 +205,27 @@ export default function AnalisisPage() {
           </div>
           {/* ← metricsData en lugar de zonesData */}
           <ExecuteScoringForm datasetId={datasetId} zonesData={metricsData} />
+
+
+        <button
+  onClick={executeML}
+  disabled={loadingIA}
+  className="
+    mt-4 sm:mt-0
+    bg-emerald-600
+    hover:bg-emerald-500
+    disabled:bg-zinc-700
+    text-white
+    px-4 py-2
+    rounded-xl
+    transition
+  "
+>
+  {loadingIA
+    ? "Analizando..."
+    : "Calcular Potencial con IA"}
+</button>
+ 
         </div>
 
         <RankingTable
@@ -173,6 +233,24 @@ export default function AnalisisPage() {
           isLoading={isRankingLoading}
           isError={isRankingError}
         />
+
+        {/* RESULTADOS IA */}
+<div className="mt-8">
+  
+  {loadingIA && (
+    <div className="flex items-center gap-3 p-6 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-400"></div>
+      <p className="text-zinc-300">
+        La IA está analizando las zonas...
+      </p>
+    </div>
+  )}
+
+  {!loadingIA && (
+    <ActionPlanList recommendations={recommendations} />
+  )}
+
+</div>
       </div>
     </div>
   );
