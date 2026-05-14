@@ -65,6 +65,15 @@ export default function Sidebar() {
         >
           3.Modulo de IA
         </Link>
+        <Link
+          href="/dashboard/comparadorv"
+          className={`px-4 py-3 rounded-xl font-medium transition-all ${isActive("/dashboard/comparadorv")
+              ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
+              : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+            }`}
+        >
+          4.Comparador Avanzado
+        </Link>
       </nav>
 
       <SystemStatus />
