@@ -13,6 +13,7 @@ import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
 import { useRanking } from "./hooks/useRanking";
+import ExportButton from './components/ExportButton';
 
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
@@ -157,16 +158,18 @@ export default function AnalisisPage() {
 
       {/* RANKING */}
       <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 shadow-lg shadow-black/20">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-zinc-800/50 pb-6">
-          <div>
-            <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
-              Ranking de Zonas
-            </h2>
-            <p className="text-sm text-zinc-400 mt-1">Calcula el score en base a los pesos configurados</p>
-          </div>
-          {/* ← metricsData en lugar de zonesData */}
-          <ExecuteScoringForm datasetId={datasetId} zonesData={metricsData} />
-        </div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-zinc-800/50 pb-6">
+       <div>
+      <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
+        Ranking de Zonas
+      </h2>
+      <p className="text-sm text-zinc-400 mt-1">Calcula el score en base a los pesos configurados</p>
+      </div>
+      <div className="flex items-center gap-3 mt-4 sm:mt-0"> {/* ← wrapper para los 2 botones */}
+      <ExportButton datasetId={datasetId} />
+      <ExecuteScoringForm datasetId={datasetId} zonesData={metricsData} />
+    </div>
+  </div>
 
         <RankingTable
           data={rankingData}
