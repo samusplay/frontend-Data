@@ -22,13 +22,13 @@ export default function Sidebar() {
   const isActive = (path: string) => pathname === path;
 
   const navItems = [
-    { href: "/dashboard", label: "Inicio", icon: Icons.Home },
-    { href: "/dashboard/ingesta", label: "1. Ingesta de Datos", icon: Icons.Database },
-    { href: "/dashboard/analisis", label: "2. Análisis y Scoring", icon: Icons.Chart },
-    { href: "/dashboard/configuracion", label: "3. Configuración", icon: Icons.Settings },
-    { href: "/dashboard/IA", label: "4. Módulo de IA", icon: Icons.AI },
-    { href: "/dashboard/comparadorv", label: "5. Comparador", icon: Icons.Compare },
-  ];
+  { href: "/dashboard", label: "Inicio", icon: Icons.Home },
+  { href: "/dashboard/ingesta", label: "1. Ingesta de Datos", icon: Icons.Database },
+  { href: "/dashboard/analisis", label: "2. Análisis y Scoring", icon: Icons.Chart },
+  { href: "/dashboard/configuracion", label: "3. Configuración", icon: Icons.Settings },
+  { href: "/dashboard/predicciones", label: "4. Módulo de IA", icon: Icons.AI },
+  { href: "/dashboard/comparadorv", label: "5. Comparador", icon: Icons.Compare },
+];
 
   return (
     <aside 

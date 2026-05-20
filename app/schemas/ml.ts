@@ -31,7 +31,17 @@ export const MLScoringResponseSchema = z.object({
   algorithm_used: z.string(),
   execution_time_ms: z.number(),
   data: z.array(ZoneMLResultSchema),
-  model_metrics: z.object({
+
+recommendations: z.array(
+  z.object({
+    variable: z.string(),
+    impact: z.number(),
+    recommendation: z.string(),
+    type: z.string()
+  })
+).optional(),
+
+model_metrics: z.object({
     n_zones: z.number(),
     r2_score: z.number(),
     feature_importances: z.record(z.string(), z.number()).optional(),
