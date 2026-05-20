@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import ExecuteScoringForm from "./components/ExecuteScoringForm";
 import IndicatorCards from "./components/IndicatorCards";
 import RankingTable from "./components/RankingTable";
+import RecommendationsPanel from "./components/RecommendationsPanel";
 import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
@@ -18,14 +19,17 @@ export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
   const datasetId = useDatasetStore((state) => state.datasetId);
 
-  // === 2. ESTADO DE MONTAJE (Para evitar Hydration Mismatch) ===
+  // === 2. ESTADO DE MONTAJE ===
   const [isMounted, setIsMounted] = useState(false);
+
+  // === 3. ZONA SELECCIONADA (Para recomendaciones) ===
+  const [selectedZone, setSelectedZone] = useState<{ code: string; name: string } | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // === 3. LLAMADAS A LA API ===
+  // === 4. LLAMADAS A LA API ===
   const { data: responseZones, isLoading: isZonesLoading } = useQuery({
     queryKey: ["zones", datasetId],
     queryFn: async () => await getZones(),
@@ -46,9 +50,8 @@ export default function AnalisisPage() {
     isError: isRankingError,
   } = useRanking(datasetId);
 
-  // === 4. PREPARACIÓN DE DATOS ===
+  // === 5. PREPARACIÓN DE DATOS ===
   const rawRankingData = rankingResponse?.data || [];
-  const zonesData = (responseZones?.data || []) as any[];
   const metricsData = (metricsResponse?.data || []) as any[];
 
   const rankingData = rawRankingData.map((item: any) => {
@@ -61,16 +64,20 @@ export default function AnalisisPage() {
     };
   });
 
-
+  // === 6. HANDLER DE SELECCIÓN ===
+  const handleZoneSelect = (zoneCode: string, zoneName: string) => {
+    if (selectedZone?.code === zoneCode) {
+      setSelectedZone(null); // Deselecciona si vuelve a hacer clic
+      return;
+    }
+    setSelectedZone({ code: zoneCode, name: zoneName });
+  };
 
   if (!isMounted) {
     return <div className="p-10 text-center text-zinc-500">Recuperando sesión...</div>;
   }
-  console.log("rankingResponse:", rankingResponse);
-  console.log("rawRankingData:", rawRankingData);
-  console.log("rankingData:", rankingData);
 
-  // === 5. EL CANDADO ===
+  // === 7. ESTADO SIN DATOS ===
   if (!datasetId) {
     return (
       <div className="w-full max-w-4xl mx-auto">
@@ -105,9 +112,9 @@ export default function AnalisisPage() {
     );
   }
 
-  // === 6. LA PUERTA ABIERTA ===
+  // === 8. VISTA PRINCIPAL ===
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto pb-12">
       <div className="mb-8 border-b border-zinc-800 pb-4">
         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
           Transformación y Análisis
@@ -155,24 +162,46 @@ export default function AnalisisPage() {
         )}
       </div>
 
-      {/* RANKING */}
+      {/* MODULO: RANKING Y RECOMENDACIONES */}
       <div className="mt-8 p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50 shadow-lg shadow-black/20">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-zinc-800/50 pb-6">
           <div>
             <h2 className="text-xl font-semibold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400">
-              Ranking de Zonas
+              Ranking de Zonas y Plan de Acción
             </h2>
-            <p className="text-sm text-zinc-400 mt-1">Calcula el score en base a los pesos configurados</p>
+            <p className="text-sm text-zinc-400 mt-1">Calcula el score y selecciona una zona para ver las recomendaciones estratégicas.</p>
           </div>
-          {/* ← metricsData en lugar de zonesData */}
           <ExecuteScoringForm datasetId={datasetId} zonesData={metricsData} />
         </div>
 
-        <RankingTable
-          data={rankingData}
-          isLoading={isRankingLoading}
-          isError={isRankingError}
-        />
+        {/* GRID DE DOS COLUMNAS - STICKY PARENT */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start relative">
+          
+          {/* COLUMNA IZQUIERDA: TABLA */}
+          <div className={`w-full ${selectedZone ? 'lg:w-[40%]' : 'lg:w-full'} transition-all duration-500 ease-in-out`}>
+            <RankingTable
+              data={rankingData}
+              isLoading={isRankingLoading}
+              isError={isRankingError}
+              selectedZoneCode={selectedZone?.code}
+              onZoneSelect={handleZoneSelect}
+            />
+          </div>
+
+          {/* COLUMNA DERECHA: RECOMENDACIONES */}
+          {selectedZone && datasetId && (
+            <div className="w-full lg:w-[60%] animate-in slide-in-from-right-8 fade-in duration-500 sticky top-8">
+              <div className="h-full border border-zinc-700/50 rounded-2xl bg-zinc-950/40 p-1"> 
+                 <RecommendationsPanel
+                    datasetId={datasetId}
+                    zoneCode={selectedZone.code}
+                    zoneName={selectedZone.name}
+                  />
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );
