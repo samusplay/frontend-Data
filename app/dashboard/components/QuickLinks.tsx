@@ -4,44 +4,55 @@ interface QuickLinkItem {
   title: string;
   description: string;
   href: string;
-  hoverColor: string; 
+  colorClass: string;
+  bgHover: string;
 }
 
-// Lista de módulos del Dashboard
 const LINKS: QuickLinkItem[] = [
   {
     title: "Nueva Ingesta",
-    description: "Sube archivos estructurados (.csv, .json) para su validación e inserción en la base de datos temporal.",
+    description: "Sube archivos y valida datos.",
     href: "/dashboard/ingesta",
-    hoverColor: "group-hover:text-blue-400",
+    colorClass: "text-blue-400 group-hover:text-blue-300",
+    bgHover: "hover:bg-blue-500/5 hover:border-blue-500/30",
   },
   {
     title: "Módulo de Análisis",
-    description: "Consulta zonas procesadas, aplica reglas de negocio y transforma datos para el modelo analítico.",
+    description: "Genera scoring y planes de acción.",
     href: "/dashboard/analisis",
-    hoverColor: "group-hover:text-cyan-400",
+    colorClass: "text-cyan-400 group-hover:text-cyan-300",
+    bgHover: "hover:bg-cyan-500/5 hover:border-cyan-500/30",
   },
   {
-    title: "Configuración del Sistema",
-    description: "Ajusta umbrales, parámetros de análisis y gestiona preferencias generales de la aplicación.",
-    href: "/dashboard/configuracion", 
-    hoverColor: "group-hover:text-purple-400",
+    title: "Configuración",
+    description: "Ajusta umbrales y preferencias.",
+    href: "/dashboard/configuracion",
+    colorClass: "text-purple-400 group-hover:text-purple-300",
+    bgHover: "hover:bg-purple-500/5 hover:border-purple-500/30",
   }
 ];
 
 export default function QuickLinks() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+    <div className="flex flex-col gap-3 p-2">
       {LINKS.map((link, index) => (
         <Link 
           key={index} 
           href={link.href} 
-          className="group block bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 rounded-2xl p-6 transition-all shadow-sm hover:shadow-md"
+          className={`group relative block rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 transition-all duration-300 ${link.bgHover}`}
         >
-          <h3 className={`text-lg font-bold text-white transition-colors ${link.hoverColor}`}>
-            {link.title} &rarr;
-          </h3>
-          <p className="text-sm text-zinc-400 mt-2">
+          <div className="flex items-center justify-between">
+            <h3 className={`text-sm font-semibold transition-colors ${link.colorClass}`}>
+              {link.title}
+            </h3>
+            <svg 
+              className={`w-4 h-4 transform opacity-50 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100 ${link.colorClass}`} 
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <p className="text-xs text-zinc-500 mt-1.5 leading-relaxed">
             {link.description}
           </p>
         </Link>
