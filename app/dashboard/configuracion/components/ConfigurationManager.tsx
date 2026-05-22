@@ -64,19 +64,19 @@ export default function ConfigurationManager({
 
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <div className="mb-8 border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+      <div className="mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-cyan-500 dark:from-blue-400 dark:to-cyan-400">
           Configuración de Modelo
         </h1>
-        <p className="mt-2 text-zinc-400">
+        <p className="mt-2 text-zinc-500 dark:text-zinc-400">
           Ajusta los pesos del modelo para controlar el análisis de oportunidad.
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         {/* PANEL IZQUIERDO */}
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-          <h2 className="mb-6 text-xl font-semibold text-white">
+        <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-6 shadow-sm">
+          <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-white">
             Pesos del perfil activo
           </h2>
 
@@ -101,9 +101,9 @@ export default function ConfigurationManager({
             accent="bg-rose-500"
           />
 
-          <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950/70 p-4">
+          <div className="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950/70 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-zinc-400">Suma total</span>
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">Suma total</span>
               <span
                 className={`text-lg font-semibold ${
                   total === 1 ? "text-emerald-400" : "text-rose-400"
@@ -143,13 +143,13 @@ export default function ConfigurationManager({
         </section>
 
         {/* PANEL DERECHO */}
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
-          <h2 className="mb-4 text-xl font-semibold text-white">
+        <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-6 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold text-zinc-900 dark:text-white">
             Perfiles guardados
           </h2>
 
           {initialProfiles.length === 0 ? (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-zinc-500 dark:text-zinc-500">
               Aún no hay perfiles registrados.
             </p>
           ) : (
@@ -159,8 +159,8 @@ export default function ConfigurationManager({
                   key={profile.id}
                   className={`rounded-xl border p-4 ${
                     profile.is_active
-                      ? "border-emerald-700 bg-emerald-950/20"
-                      : "border-zinc-800 bg-zinc-950/30"
+                      ? "border-emerald-400/50 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/20"
+                      : "border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/30"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -199,12 +199,12 @@ function SliderField({ label, value, onChange, accent }: SliderFieldProps) {
   return (
     <div className="mb-6">
       <div className="mb-2 flex items-center justify-between">
-        <label className="text-sm font-medium text-zinc-300">{label}</label>
-        <span className="text-sm font-mono text-zinc-400">
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{label}</label>
+        <span className="text-sm font-mono text-zinc-500 dark:text-zinc-400">
           {value.toFixed(1)}
         </span>
       </div>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950/60 p-4">
         <input
           type="range"
           min="0"
@@ -212,7 +212,7 @@ function SliderField({ label, value, onChange, accent }: SliderFieldProps) {
           step="0.1"
           value={value}
           onChange={(event) => onChange(Number(event.target.value))}
-          className={`h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-800 ${accent}`}
+          className={`h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-300 dark:bg-zinc-800 ${accent}`}
         />
       </div>
     </div>

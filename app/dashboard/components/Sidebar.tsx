@@ -22,64 +22,57 @@ export default function Sidebar() {
   const isActive = (path: string) => pathname === path;
 
   const navItems = [
-    { href: "/dashboard", label: "Inicio", icon: Icons.Home },
-    { href: "/dashboard/ingesta", label: "1. Ingesta de Datos", icon: Icons.Database },
-    { href: "/dashboard/analisis", label: "2. Análisis y Scoring", icon: Icons.Chart },
-    { href: "/dashboard/configuracion", label: "3. Configuración", icon: Icons.Settings },
-    { href: "/dashboard/IA", label: "4. Módulo de IA", icon: Icons.AI },
-    { href: "/dashboard/comparadorv", label: "5. Comparador", icon: Icons.Compare },
+    { href: "/dashboard", label: "Inicio", icon: Icons.Home, num: null },
+    { href: "/dashboard/ingesta", label: "Ingesta de Datos", icon: Icons.Database, num: 1 },
+    { href: "/dashboard/analisis", label: "Transformación y Análisis", icon: Icons.Chart, num: 2 },
+    { href: "/dashboard/configuracion", label: "Configuración", icon: Icons.Settings, num: 3 },
+    { href: "/dashboard/IA", label: "Módulo de IA", icon: Icons.AI, num: 4 },
+    { href: "/dashboard/comparadorv", label: "Comparador", icon: Icons.Compare, num: 5 },
   ];
 
   return (
-    <aside 
-      className={`bg-zinc-950 border-r border-zinc-800 flex flex-col h-screen sticky top-0 transition-all duration-300 ease-in-out ${
-        isExpanded ? "w-64 px-6 py-6" : "w-20 px-4 py-6 items-center"
+    <aside
+      className={`relative bg-white dark:bg-[#0a0a0a] border-r border-zinc-200 dark:border-zinc-800/80 flex flex-col h-screen sticky top-0 transition-all duration-300 ease-in-out z-20 ${
+        isExpanded ? "w-[280px]" : "w-[80px]"
       }`}
     >
-      {/* HEADER Y BOTÓN COLAPSAR */}
-      <div className={`flex w-full items-center mb-8 ${isExpanded ? "justify-between" : "justify-center"}`}>
+      {/* HEADER: Logo + título */}
+      <div className="flex items-center gap-3 px-6 py-6 border-b border-zinc-200 dark:border-zinc-800/80 h-[88px]">
+        {/* Gradient logo badge */}
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/20">
+          <span className="text-white font-bold text-sm tracking-tight">AT</span>
+        </div>
         {isExpanded && (
-          <div>
-            <h2 className="text-lg font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 whitespace-nowrap overflow-hidden">
+          <div className="overflow-hidden">
+            <h2 className="text-[15px] font-bold text-zinc-900 dark:text-white leading-tight whitespace-nowrap">
               Analítica Territorial
             </h2>
-            <p className="text-[10px] text-zinc-500 mt-0.5 tracking-wider uppercase">v1.0 Core</p>
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-500 mt-0.5 whitespace-nowrap font-medium">v1.0 · Core System</p>
           </div>
         )}
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors"
-          title={isExpanded ? "Colapsar menú" : "Expandir menú"}
-        >
-          <svg className={`w-4 h-4 transition-transform duration-300 ${!isExpanded && "rotate-180"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-        </button>
       </div>
 
       {/* NAVEGACIÓN */}
-      <nav className="flex flex-col gap-2 grow w-full">
+      <nav className="flex flex-col gap-1.5 px-4 py-6 grow">
         {navItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl transition-all duration-200 overflow-hidden ${
-                isExpanded ? "px-4 py-3" : "p-3 justify-center"
-              } ${
+              title={!isExpanded ? item.label : undefined}
+              className={`relative flex items-center gap-3 rounded-full transition-all duration-200 px-4 py-3 group ${
                 active
-                  ? "bg-blue-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.05)]"
-                  : "text-zinc-400 border border-transparent hover:bg-zinc-800/50 hover:text-zinc-200"
+                  ? "bg-teal-50/80 dark:bg-teal-500/10 text-teal-700 dark:text-teal-400 font-medium"
+                  : "bg-transparent text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200"
               }`}
-              title={!isExpanded ? item.label : ""}
             >
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <item.icon />
               </div>
               {isExpanded && (
-                <span className="font-medium text-sm whitespace-nowrap">
-                  {item.label}
+                <span className="text-[14px] whitespace-nowrap">
+                  {item.num !== null ? `${item.num}. ` : ""}{item.label}
                 </span>
               )}
             </Link>
@@ -87,10 +80,33 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* SYSTEM STATUS */}
-      <div className={`mt-auto transition-opacity duration-300 ${!isExpanded && "hidden"}`}>
+      {/* SYSTEM STATUS — expanded */}
+      <div className={`px-4 pb-6 transition-all duration-300 ${!isExpanded ? "opacity-0 pointer-events-none h-0 overflow-hidden pb-0" : ""}`}>
         <SystemStatus />
       </div>
+
+      {/* SYSTEM STATUS — collapsed dot indicator */}
+      {!isExpanded && (
+        <div className="pb-6 flex justify-center">
+          <div className="relative flex flex-col items-center gap-1">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* BOTÓN COLAPSAR — flotante en el borde, centrado verticalmente */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-500 transition-all shadow-sm z-30"
+        title={isExpanded ? "Colapsar menú" : "Expandir menú"}
+      >
+        <svg className={`w-3.5 h-3.5 transition-transform duration-300 ${!isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
     </aside>
   );
 }

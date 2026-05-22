@@ -92,15 +92,15 @@ export default function DatasetUploader() {
     }
     return (
         // Fondo oscuro semitransparente con borde sutil
-        <div className="max-w-xl mx-auto mt-12 bg-zinc-900/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-zinc-800">
+        <div className="max-w-xl mx-auto mt-12 bg-white dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
             
             {/* Cabecera del componente con gradiente de texto sutil y Botón de reinicio */}
-            <div className="border-b border-zinc-800 px-6 py-5 flex justify-between items-center">
+            <div className="border-b border-zinc-200 dark:border-zinc-800 px-6 py-5 flex justify-between items-center">
                 <div>
-                    <h2 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+                    <h2 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-cyan-500 dark:from-blue-400 dark:to-cyan-400">
                         {metrics ? "Resumen de Ingesta" : "Ingesta de Datos Territoriales"}
                     </h2>
-                    <p className="text-zinc-400 text-sm mt-1">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">
                         {metrics ? "El archivo ha sido validado en memoria y procesado correctamente." : "Sube tu dataset estructurado para iniciar el proceso"}
                     </p>
                 </div>
@@ -124,7 +124,7 @@ export default function DatasetUploader() {
                 // --- VISTA 1: FORMULARIO ORIGINAL ---
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-6">
                     {/* Zona de Drag & Drop Oscura */}
-                    <div className="border-2 border-dashed border-zinc-700 rounded-xl p-8 text-center hover:bg-zinc-800/50 hover:border-zinc-500 transition-all duration-300">
+                    <div className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-8 text-center hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:border-zinc-400 dark:hover:border-zinc-500 transition-all duration-300">
                         <input
                             type="file"
                             id="file-upload"
@@ -139,7 +139,7 @@ export default function DatasetUploader() {
                             <svg className={`w-12 h-12 transition-colors ${file ? 'text-blue-400' : 'text-zinc-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
-                            <span className="text-sm font-medium text-zinc-300">
+                            <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
                                 {file ? (
                                     <span className="text-blue-400 font-semibold">{file.name}</span>
                                 ) : (
@@ -183,9 +183,9 @@ export default function DatasetUploader() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-4 pt-2">
-                        <div className="bg-zinc-800/50 rounded-lg p-4 text-center border border-zinc-700/50">
+                        <div className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg p-4 text-center border border-zinc-200 dark:border-zinc-700/50">
                             <p className="text-xs text-zinc-500 font-medium mb-1">Total Filas</p>
-                            <p className="text-2xl font-bold text-white">{metrics.total_records}</p>
+                            <p className="text-2xl font-bold text-zinc-900 dark:text-white">{metrics.total_records}</p>
                         </div>
                         <div className="bg-blue-500/10 rounded-lg p-4 text-center border border-blue-500/20">
                             <p className="text-xs text-blue-400/70 font-medium mb-1">Válidas</p>
@@ -198,7 +198,7 @@ export default function DatasetUploader() {
                     </div>
 
                     {/* 👇 AQUÍ ESTÁ EL BOTÓN DE VIAJE QUE TE FALTABA 👇 */}
-                    <div className="mt-6 pt-4 border-t border-zinc-800">
+                    <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
                         <button 
                             onClick={()=>router.push(`/dashboard/analisis`)}
                             className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"

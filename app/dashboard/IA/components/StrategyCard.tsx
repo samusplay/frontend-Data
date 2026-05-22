@@ -19,8 +19,8 @@ export function StrategyCard({ name, tag, desc, icon: Icon, color, isActive, onC
       className={`
         w-full flex flex-col p-4 rounded-2xl border transition-all duration-300 text-left group relative overflow-hidden
         ${isActive
-          ? 'bg-zinc-900 border-zinc-700'
-          : 'bg-zinc-900/20 border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-900/40'}
+          ? 'bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 shadow-sm dark:shadow-none'
+          : 'bg-zinc-50/50 dark:bg-zinc-900/20 border-zinc-200 dark:border-zinc-800/50 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-100/50 dark:hover:bg-zinc-900/40'}
         disabled:opacity-50 disabled:cursor-not-allowed
       `}
     >
@@ -31,8 +31,8 @@ export function StrategyCard({ name, tag, desc, icon: Icon, color, isActive, onC
 
       <div className="flex justify-between items-start mb-3">
         <Icon
-          className="w-5 h-5 transition-colors duration-300"
-          style={isActive ? { color } : { color: '#52525b' }}
+          className={`w-5 h-5 transition-colors duration-300 ${isActive ? '' : 'text-zinc-400 dark:text-zinc-500'}`}
+          style={isActive ? { color } : {}}
         />
         {/* Tag con color de la estrategia cuando activo */}
         <span
@@ -47,8 +47,7 @@ export function StrategyCard({ name, tag, desc, icon: Icon, color, isActive, onC
       </div>
 
       <h3
-        className="text-sm font-bold transition-colors duration-300"
-        style={isActive ? { color: '#f4f4f5' } : { color: '#71717a' }}
+        className={`text-sm font-bold transition-colors duration-300 ${isActive ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-500'}`}
       >
         {name}
       </h3>

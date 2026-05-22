@@ -58,8 +58,8 @@ export default function RankingTable({ data, isLoading, isError, selectedZoneCod
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-12 border border-dashed border-zinc-700 rounded-2xl bg-zinc-900/40">
-        <h3 className="text-lg font-semibold text-zinc-300">No hay ranking disponible</h3>
+      <div className="flex flex-col items-center justify-center gap-4 p-12 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/40">
+        <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300">No hay ranking disponible</h3>
         <p className="text-sm text-zinc-500 text-center max-w-sm">Ejecuta el cálculo de pesos para generar el ranking territorial.</p>
       </div>
     );

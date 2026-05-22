@@ -39,12 +39,12 @@ export default function ComparadorAvanzadoView() {
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="flex flex-col h-screen bg-zinc-950 text-white overflow-hidden">
+      <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white overflow-hidden">
 
         {/* Header */}
-        <header className="px-6 py-3 border-b border-zinc-900 flex items-center justify-between shrink-0">
+        <header className="px-6 py-3 border-b border-zinc-200 dark:border-zinc-900 flex items-center justify-between shrink-0 bg-white/80 dark:bg-transparent backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <div className="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20">
               <Swords className="w-4 h-4 text-blue-400" />
             </div>
             <div>
@@ -63,7 +63,7 @@ export default function ComparadorAvanzadoView() {
                 }`} />
               ))}
             </div>
-            <span className="text-xs text-zinc-500">{selectedZones.length}/4 zonas</span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-500">{selectedZones.length}/4 zonas</span>
             {selectedZones.length > 0 && (
               <button onClick={clearArena}
                 className="flex items-center gap-1 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">
@@ -77,9 +77,9 @@ export default function ComparadorAvanzadoView() {
         <div className="flex-1 grid grid-cols-12 overflow-hidden">
 
           {/* Col izquierda — inventario */}
-          <aside className="col-span-3 border-r border-zinc-900 overflow-hidden flex flex-col">
+          <aside className="col-span-3 border-r border-zinc-200 dark:border-zinc-900 overflow-hidden flex flex-col bg-white dark:bg-transparent">
             <div className="px-4 pt-3 pb-2 shrink-0">
-              <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Zonas disponibles</p>
+              <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-widest">Zonas disponibles</p>
               <p className="text-[11px] text-zinc-500 mt-0.5">Arrastra al arena para comparar</p>
             </div>
             <div className="flex-1 overflow-y-auto">
@@ -97,17 +97,17 @@ export default function ComparadorAvanzadoView() {
               {/* Estrategias — solo cuando hay 2+ zonas */}
               {selectedZones.length >= 2 && (
                 <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-600 uppercase tracking-widest font-bold">
                     Estrategia de análisis
                   </p>
                   <div className="grid grid-cols-4 gap-2">
                     {STRATEGIES.map((s) => (
                       <button key={s.id} onClick={() => handleCompare(s.id)}
                         disabled={!canCompare}
-                        className="flex items-center justify-between px-3 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 hover:border-zinc-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all group">
+                        className="flex items-center justify-between px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all group">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-                          <span className="text-xs font-medium text-zinc-300 group-hover:text-white transition-colors">
+                          <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
                             {s.label}
                           </span>
                         </div>
@@ -130,7 +130,7 @@ export default function ComparadorAvanzadoView() {
 
               {/* Veredicto — inline debajo del arena */}
               {comparisonResult && (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 space-y-5">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 p-5 space-y-5">
 
                   {/* Header veredicto */}
                   <div className="flex items-start justify-between gap-4">
@@ -151,7 +151,7 @@ export default function ComparadorAvanzadoView() {
 
                     {/* Ventaja competitiva */}
                     {comparisonResult.verdict.main_competitive_advantage && (
-                      <div className="shrink-0 p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-right min-w-40">
+                      <div className="shrink-0 p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-right min-w-40">
                         <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Ventaja principal</p>
                         <p className="text-sm font-bold text-zinc-100 capitalize mt-0.5">
                           {comparisonResult.verdict.main_competitive_advantage.metric_name}

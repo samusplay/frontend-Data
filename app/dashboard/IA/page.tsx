@@ -43,23 +43,23 @@ export default function IAPage() {
   }
 
   if (!datasetId) return (
-    <div className="flex flex-col items-center justify-center h-full text-zinc-500 bg-zinc-950 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center h-full text-zinc-500 bg-zinc-50 dark:bg-zinc-950 animate-in fade-in duration-700">
       <BrainCircuit className="w-16 h-16 mb-6 opacity-10" />
-      <div className="flex items-center gap-2 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800">
-        <Info className="w-4 h-4 text-blue-400" />
-        <p className="text-sm font-medium">Carga un dataset en el panel de análisis para activar la IA.</p>
+      <div className="flex items-center gap-2 p-4 rounded-2xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800">
+        <Info className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Carga un dataset en el panel de análisis para activar la IA.</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 text-white overflow-hidden">
+    <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white overflow-hidden">
 
       {/* Línea de acento — color cambia por estrategia */}
       <div className="h-0.5 w-full transition-all duration-1000" style={{ backgroundColor: themeColor }} />
 
       {/* Header */}
-      <header className="px-6 py-4 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/50 backdrop-blur-xl z-20">
+      <header className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-900 flex items-center justify-between bg-white/80 dark:bg-zinc-950/50 backdrop-blur-xl z-20">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl border transition-all duration-1000"
             style={{ backgroundColor: themeColor + '15', borderColor: themeColor + '30' }}>
@@ -71,10 +71,10 @@ export default function IAPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <div className="w-2 h-2 rounded-full animate-pulse transition-colors duration-1000"
             style={{ backgroundColor: themeColor }} />
-          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+          <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
             {activeResult ? activeResult.algorithm_used : "Standby Mode"}
           </span>
         </div>
@@ -84,10 +84,10 @@ export default function IAPage() {
       <div className="flex-1 grid grid-cols-12 overflow-hidden">
 
         {/* Col 1 — Estrategias */}
-        <aside className="col-span-3 border-r border-zinc-900 p-5 space-y-5 overflow-y-auto">
+        <aside className="col-span-3 border-r border-zinc-200 dark:border-zinc-900 p-5 space-y-5 overflow-y-auto bg-white dark:bg-transparent">
           <div>
-            <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Algoritmos</p>
-            <p className="text-[11px] text-zinc-500 mt-0.5">Selecciona el enfoque analítico</p>
+            <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.2em]">Algoritmos</p>
+            <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">Selecciona el enfoque analítico</p>
           </div>
           <div className="space-y-3">
             {STRATEGIES.map((s) => (
@@ -107,7 +107,7 @@ export default function IAPage() {
         </aside>
 
         {/* Col 2 — Mapa */}
-        <main className="col-span-6 p-6 flex items-center justify-center relative bg-zinc-950 overflow-hidden">
+        <main className="col-span-6 p-6 flex items-center justify-center relative bg-zinc-100 dark:bg-zinc-950 overflow-hidden">
           <div
             className="absolute inset-0 opacity-15 transition-all duration-1000 pointer-events-none"
             style={{ background: `radial-gradient(circle at center, ${themeColor} 0%, transparent 70%)` }}
@@ -132,7 +132,7 @@ export default function IAPage() {
         </main>
 
         {/* Col 3 — Detalle zona */}
-        <aside className="col-span-3 border-l border-zinc-900 p-5 overflow-y-auto">
+        <aside className="col-span-3 border-l border-zinc-200 dark:border-zinc-900 p-5 overflow-y-auto bg-white dark:bg-transparent">
           {selectedZone ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
 
@@ -150,9 +150,9 @@ export default function IAPage() {
               </div>
 
               {/* Business summary */}
-              <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 relative overflow-hidden">
+              <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full rounded-l-xl" style={{ backgroundColor: selectedZone.color_code }} />
-                <p className="text-xs text-zinc-300 leading-relaxed italic pl-2">
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed italic pl-2">
                   "{selectedZone.interpretation.business_summary}"
                 </p>
               </div>
@@ -170,7 +170,7 @@ export default function IAPage() {
                         {f.impact}
                       </span>
                     </div>
-                    <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-zinc-200 dark:bg-zinc-900 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-1000"
                         style={{
