@@ -26,6 +26,19 @@ export async function executeScoringAction(
     return { success: true, data: parsed.data }
 
   } catch (error: any) {
-    return { success: false, error: error?.message || "Error en el motor de predicción." }
+    let message = error?.message || "Error en el motor de predicción."
+    if (typeof message === 'string') {
+        try {
+            const parsedError = JSON.parse(message)
+            if (parsedError.error && parsedError.error.message) {
+                message = parsedError.error.message
+            } else if (parsedError.message) {
+                message = parsedError.message
+            }
+        } catch (e) {
+            // No es JSON, usar el string original
+        }
+    }
+    return { success: false, error: message }
   }
 }

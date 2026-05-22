@@ -22,7 +22,23 @@ export async function getPredictionAction(zoneCode: string) {
         return { success: data.success, data: data.data, error: errorMessage }
 
     } catch (error) {
-        const message = error instanceof Error ? error.message : "Error desconocido"
+        let message = "Error desconocido"
+        if (error instanceof Error) {
+            try {
+                // El apiClient puede lanzar un error con un string JSON en el message
+                const parsedError = JSON.parse(error.message)
+                if (parsedError.error && parsedError.error.message) {
+                    message = parsedError.error.message
+                } else if (parsedError.message) {
+                    message = parsedError.message
+                } else {
+                    message = error.message
+                }
+            } catch (e) {
+                // No es JSON, usar el string original
+                message = error.message
+            }
+        }
         return { success: false, data: null, error: message }
     }
 }

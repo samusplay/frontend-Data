@@ -5,12 +5,15 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core'
 import { useState } from 'react'
 
 import { getPredictionAction } from '@/app/actions/get-prediction.action'
+import { executeScoringAction } from '@/app/actions/ml.action'
 import { ZoneInventory } from '@/app/dashboard/comparadorv/components/ZoneInventory'
+import { useDatasetStore } from '@/app/lib/useDatasetStore'
 import { Prediction } from '@/app/schemas/PredictionSchema'
 import { Sparkles } from 'lucide-react'
 import { PredictionDropZone } from './components/PredictionDropZone'
 
 export default function PrediccionesPage() {
+  const datasetId = useDatasetStore((state) => state.datasetId)
   const [prediction, setPrediction] = useState<Prediction['data']>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +28,13 @@ export default function PrediccionesPage() {
     setError(null)
     setPrediction(null)
 
-    const result = await getPredictionAction(zoneCode)
+    let result = await getPredictionAction(zoneCode)
+
+    // Si no existe la predicción, intentamos ejecutar el motor de ML primero
+    if (!result.success && datasetId) {
+        await executeScoringAction(datasetId, 'gradient_boosting')
+        result = await getPredictionAction(zoneCode)
+    }
 
     if (!result.success || !result.data) {
       setError(result.error ?? 'Error al obtener la predicción del modelo.')
