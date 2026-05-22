@@ -29,6 +29,13 @@ const LINKS: QuickLinkItem[] = [
     href: "/dashboard/configuracion",
     colorClass: "text-purple-400 group-hover:text-purple-300",
     bgHover: "hover:bg-purple-500/5 hover:border-purple-500/30",
+  },
+  {
+    title: "Auditoría de Eventos",
+    description: "Revisa la trazabilidad del sistema.",
+    href: "/dashboard/auditoria",
+    colorClass: "text-emerald-400 group-hover:text-emerald-300",
+    bgHover: "hover:bg-emerald-500/5 hover:border-emerald-500/30",
   }
 ];
 
