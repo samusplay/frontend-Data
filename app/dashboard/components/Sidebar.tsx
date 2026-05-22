@@ -28,6 +28,7 @@ export default function Sidebar() {
     { href: "/dashboard/configuracion", label: "3. Configuración", icon: Icons.Settings },
     { href: "/dashboard/IA", label: "4. Módulo de IA", icon: Icons.AI },
     { href: "/dashboard/comparadorv", label: "5. Comparador", icon: Icons.Compare },
+    { href: "/dashboard/predicciones", label: "6. Predicciones", icon: Icons.Chart },
   ];
 
   return (
