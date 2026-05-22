@@ -1,6 +1,6 @@
 "use client";
 
-import { saveProfile, updateProfile, deleteProfile } from "@/app/actions/profiles.actions";
+import { deleteProfile, saveProfile, updateProfile } from "@/app/actions/profiles.actions";
 import {
   BusinessProfile,
   BusinessProfileInputSchema,
@@ -27,13 +27,6 @@ export default function ConfigurationManager({
   const [competencia, setCompetencia] = useState(0.3);
   const [nombrePerfil, setNombrePerfil] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
-
-  const handlePoblacionChange = (val: number) => {
-    setPoblacion(val);
-    if (val === 0) {
-      setIngresos(0);
-    }
-  };
 
   const total = Number((poblacion + ingresos + competencia).toFixed(2));
   const isValid = total === 1 && nombrePerfil.trim().length > 0;
@@ -106,7 +99,7 @@ export default function ConfigurationManager({
           Configuración de Modelo
         </h1>
         <p className="mt-2 text-zinc-400">
-          Ajusta los pesos de las variables para definir un perfil de oportunidad de negocio.
+          Ajusta los pesos del modelo para controlar el análisis de oportunidad.
         </p>
       </div>
 
@@ -121,23 +114,18 @@ export default function ConfigurationManager({
 
           <SliderField
             label="Población"
-            description="Relevancia del volumen de habitantes en la zona (Densidad)."
             value={poblacion}
-            onChange={handlePoblacionChange}
+            onChange={setPoblacion}
             accent="bg-blue-500"
           />
           <SliderField
             label="Ingresos"
-            description="Importancia del poder adquisitivo promedio."
             value={ingresos}
             onChange={setIngresos}
             accent="bg-emerald-500"
-            disabled={poblacion === 0}
-            disabledReason="Al no existir población, no es posible medir ingresos en la zona."
           />
           <SliderField
             label="Competencia"
-            description="Peso dado a la cantidad de competidores existentes."
             value={competencia}
             onChange={setCompetencia}
             accent="bg-rose-500"
@@ -145,26 +133,26 @@ export default function ConfigurationManager({
 
           <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950/70 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-zinc-400">Suma de las variables</span>
+              <span className="text-sm text-zinc-400">Suma total</span>
               <span
                 className={`text-lg font-semibold ${
                   total === 1 ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
-                {total.toFixed(2)} / 1.00
+                {total.toFixed(2)}
               </span>
             </div>
 
             {total !== 1 && (
-              <p className="mt-3 text-sm text-rose-400 bg-rose-500/10 p-2 rounded border border-rose-500/20">
-                La suma de los pesos de Población, Ingresos y Competencia debe ser exactamente 1.0
+              <p className="mt-3 text-sm text-rose-400">
+                La suma de los pesos debe ser igual a 1.0
               </p>
             )}
 
             {/* Aviso si falta el nombre */}
             {total === 1 && nombrePerfil.trim().length === 0 && (
-              <p className="mt-3 text-sm text-amber-400 bg-amber-500/10 p-2 rounded border border-amber-500/20">
-                Debes ingresar un nombre para el perfil antes de poder guardar.
+              <p className="mt-3 text-sm text-amber-400">
+                Ingresa un nombre para el perfil antes de guardar.
               </p>
             )}
           </div>
@@ -195,8 +183,8 @@ export default function ConfigurationManager({
           </div>
 
           {initialError && (
-            <p className="mt-4 text-sm text-amber-400 bg-amber-500/10 p-2 rounded border border-amber-500/20">
-              Ocurrió un problema: {initialError}
+            <p className="mt-4 text-sm text-amber-400">
+              No se pudieron cargar perfiles previos: {initialError}
             </p>
           )}
         </section>
@@ -208,58 +196,47 @@ export default function ConfigurationManager({
           </h2>
 
           {initialProfiles.length === 0 ? (
-            <div className="flex flex-col items-center justify-center text-center p-6 border border-dashed border-zinc-800 rounded-xl bg-zinc-950/30">
-              <span className="text-zinc-600 mb-2">📄</span>
-              <p className="text-sm text-zinc-500">Aún no hay perfiles registrados.</p>
-              <p className="text-xs text-zinc-600 mt-1">Crea tu primer perfil en el panel izquierdo.</p>
-            </div>
+            <p className="text-sm text-zinc-500">
+              Aún no hay perfiles registrados.
+            </p>
           ) : (
             <div className="space-y-3">
               {initialProfiles.map((profile) => (
                 <article
                   key={profile.id}
-                  className={`rounded-xl border p-4 transition-colors ${
+                  className={`rounded-xl border p-4 ${
                     profile.is_active
                       ? "border-emerald-700 bg-emerald-950/20"
-                      : "border-zinc-800 bg-zinc-950/30 hover:border-zinc-700"
+                      : "border-zinc-800 bg-zinc-950/30"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <strong className="text-white text-lg">
+                    <strong className="text-white">
                       {profile.nombre_perfil}
                     </strong>
                     {profile.is_active && (
-                      <span className="rounded-full border border-emerald-700 bg-emerald-900/30 px-3 py-1 text-xs font-medium text-emerald-400 shadow-sm">
+                      <span className="rounded-full border border-emerald-700 px-2 py-1 text-xs text-emerald-400">
                         Activo
                       </span>
                     )}
                   </div>
-                  <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-zinc-400">
-                    <div className="bg-zinc-900/50 rounded p-2">
-                      <div className="text-zinc-500 mb-1">Población</div>
-                      <div className="text-blue-400 font-mono text-sm">{profile.peso_poblacion}</div>
-                    </div>
-                    <div className="bg-zinc-900/50 rounded p-2">
-                      <div className="text-zinc-500 mb-1">Ingresos</div>
-                      <div className="text-emerald-400 font-mono text-sm">{profile.peso_ingresos}</div>
-                    </div>
-                    <div className="bg-zinc-900/50 rounded p-2">
-                      <div className="text-zinc-500 mb-1">Competencia</div>
-                      <div className="text-rose-400 font-mono text-sm">{profile.peso_competencia}</div>
-                    </div>
+                  <div className="mt-3 space-y-1 text-sm text-zinc-400">
+                    <p>Población: {profile.peso_poblacion}</p>
+                    <p>Ingresos: {profile.peso_ingresos}</p>
+                    <p>Competencia: {profile.peso_competencia}</p>
                   </div>
-                  <div className="mt-4 flex gap-3 border-t border-zinc-800/80 pt-3">
+                  <div className="mt-4 flex gap-3 border-t border-zinc-800 pt-3">
                     <button
                       onClick={() => handleEdit(profile)}
                       disabled={isPending}
-                      className="flex-1 text-xs font-medium text-blue-400 bg-blue-400/10 rounded py-1.5 hover:bg-blue-400/20 disabled:opacity-50 transition"
+                      className="text-xs font-medium text-blue-400 hover:text-blue-300 disabled:opacity-50"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleDelete(profile.id)}
                       disabled={isPending}
-                      className="flex-1 text-xs font-medium text-rose-400 bg-rose-400/10 rounded py-1.5 hover:bg-rose-400/20 disabled:opacity-50 transition"
+                      className="text-xs font-medium text-rose-400 hover:text-rose-300 disabled:opacity-50"
                     >
                       Eliminar
                     </button>
@@ -276,29 +253,21 @@ export default function ConfigurationManager({
 
 type SliderFieldProps = {
   label: string;
-  description?: string;
   value: number;
   onChange: (value: number) => void;
   accent: string;
-  disabled?: boolean;
-  disabledReason?: string;
 };
 
-function SliderField({ label, description, value, onChange, accent, disabled, disabledReason }: SliderFieldProps) {
+function SliderField({ label, value, onChange, accent }: SliderFieldProps) {
   return (
-    <div className={`mb-6 ${disabled ? 'opacity-70' : ''}`}>
-      <div className="mb-2 flex flex-col">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-zinc-200">{label}</label>
-          <span className={`text-sm font-mono ${disabled ? 'text-zinc-600' : 'text-zinc-400'}`}>
-            {value.toFixed(1)}
-          </span>
-        </div>
-        {description && (
-          <span className="text-xs text-zinc-500 mt-1">{description}</span>
-        )}
+    <div className="mb-6">
+      <div className="mb-2 flex items-center justify-between">
+        <label className="text-sm font-medium text-zinc-300">{label}</label>
+        <span className="text-sm font-mono text-zinc-400">
+          {value.toFixed(1)}
+        </span>
       </div>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition-all">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
         <input
           type="range"
           min="0"
@@ -306,14 +275,8 @@ function SliderField({ label, description, value, onChange, accent, disabled, di
           step="0.1"
           value={value}
           onChange={(event) => onChange(Number(event.target.value))}
-          disabled={disabled}
-          className={`h-2 w-full ${disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer'} appearance-none rounded-lg bg-zinc-800 ${accent}`}
+          className={`h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-800 ${accent}`}
         />
-        {disabled && disabledReason && (
-          <p className="mt-3 text-xs text-amber-500/90 flex items-start gap-1">
-            <span>⚠️</span> {disabledReason}
-          </p>
-        )}
       </div>
     </div>
   );
