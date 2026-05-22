@@ -14,6 +14,7 @@ import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
 import { useRanking } from "./hooks/useRanking";
+import ExportButton from './components/ExportButton';
 
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===

@@ -65,6 +65,7 @@ export default function RankingTable({ data, isLoading, isError, selectedZoneCod
     );
   }
 
+  
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-6">

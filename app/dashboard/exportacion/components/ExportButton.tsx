@@ -5,6 +5,10 @@ interface ExportButtonProps {
   datasetId: string;
 }
 
+/**
+ * Componente de presentación pura — solo renderiza el botón.
+ * Toda la lógica vive en useExport (SOLID - S).
+ */
 export default function ExportButton({ datasetId }: ExportButtonProps) {
   const { exportReport, isExporting } = useExport();
 
