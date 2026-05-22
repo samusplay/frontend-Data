@@ -4,13 +4,24 @@ import { getEvaluacionIntegral } from "@/app/actions/evaluacion-integral.actions
 import { getRanking } from "@/app/actions/ranking.actions";
 import { useDatasetStore } from "@/app/lib/useDatasetStore";
 import { EvaluacionIntegralData } from "@/app/schemas/evaluacion-integral";
-import { AlertTriangle, BrainCircuit, Calendar, CheckCircle2, ChevronRight, Info, Map, ShieldAlert, Target } from "lucide-react";
+import {
+    AlertTriangle,
+    BrainCircuit,
+    Calendar,
+    CheckCircle2,
+    ChevronRight,
+    Info,
+    Map,
+    MapPin,
+    ShieldAlert,
+    Target
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function EvaluacionIntegralPage() {
   const datasetId = useDatasetStore((state) => state.datasetId);
   
-  const [zones, setZones] = useState<{ zone_code: string; zone_name: string }[]>([]);
+  const [zones, setZones] = useState<{ zone_code: string; zone_name?: string }[]>([]);
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
   const [strategy, setStrategy] = useState<string>("gradient_boosting");
   
@@ -74,28 +85,68 @@ export default function EvaluacionIntegralPage() {
       
       {/* Columna Izquierda: Lista de Zonas */}
       <aside className="w-1/3 border-r border-zinc-900 flex flex-col bg-zinc-950/50">
-        <div className="p-6 border-b border-zinc-900">
+
+        <div className="p-6 border-b border-zinc-900 bg-zinc-950/80">
           <h2 className="text-lg font-bold tracking-tight">Selección de Zona</h2>
           <p className="text-xs text-zinc-500 mt-1">Elige una zona para evaluar su cruce de datos</p>
         </div>
+        
         <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
-          {zones.map((z) => (
-            <button
-              key={z.zone_code}
-              onClick={() => setSelectedZone(z.zone_code)}
-              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all duration-300 ${
-                selectedZone === z.zone_code
-                  ? "bg-blue-500/10 border-blue-500/50 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
-                  : "bg-zinc-900/30 border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-              }`}
-            >
-              <div className="text-left">
-                <p className="text-[10px] uppercase tracking-widest font-mono opacity-60 mb-1">Cód: {z.zone_code}</p>
-                <p className="font-semibold text-sm">{z.zone_name}</p>
-              </div>
-              <ChevronRight className={`w-4 h-4 transition-transform ${selectedZone === z.zone_code ? "translate-x-1" : "opacity-30"}`} />
-            </button>
-          ))}
+          {/* Estado de carga inicial o vacío */}
+          {zones.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-40 text-zinc-500">
+              <div className="w-6 h-6 border-2 border-zinc-800 border-t-zinc-500 rounded-full animate-spin mb-3" />
+              <p className="text-xs animate-pulse">Cargando inventario de zonas...</p>
+            </div>
+          ) : (
+            zones.map((z) => {
+              const isSelected = selectedZone === z.zone_code;
+              
+              return (
+                <button
+                  key={z.zone_code}
+                  onClick={() => setSelectedZone(z.zone_code)}
+                  className={`group w-full flex items-center justify-between p-3.5 rounded-xl border transition-all duration-300 ${
+                    isSelected
+                      ? "bg-blue-500/10 border-blue-500/40 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.07)]"
+                      : "bg-zinc-900/40 border-zinc-800/80 text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    {/* Icono dinámico */}
+                    <div className={`p-2 rounded-lg transition-colors duration-300 ${
+                      isSelected ? 'bg-blue-500/20' : 'bg-zinc-800/50 group-hover:bg-zinc-700/50'
+                    }`}>
+                      <MapPin className={`w-4 h-4 ${
+                        isSelected ? 'text-blue-400' : 'text-zinc-500 group-hover:text-zinc-400'
+                      }`} />
+                    </div>
+                    
+                    {/* Textos con fallback y truncado automático */}
+                    <div className="text-left overflow-hidden">
+                      <p className="text-[10px] uppercase tracking-widest font-mono opacity-60 mb-0.5">
+                        Cód: {z.zone_code}
+                      </p>
+                      <p 
+                        className="font-semibold text-sm truncate max-w-[150px] 2xl:max-w-[200px]" 
+                        title={z.zone_name || `Zona ID: ${z.zone_code}`}
+                      >
+                        {z.zone_name || `Zona sin nombrar`}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Flecha con animación suave */}
+                  <ChevronRight className={`w-4 h-4 shrink-0 transition-all duration-300 ${
+                    isSelected 
+                      ? "translate-x-1 text-blue-400" 
+                      : "opacity-30 group-hover:opacity-100 group-hover:translate-x-0.5"
+                  }`} />
+                </button>
+              )
+            })
+          )}
+
         </div>
       </aside>
 

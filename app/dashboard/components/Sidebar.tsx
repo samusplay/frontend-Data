@@ -30,7 +30,8 @@ export default function Sidebar() {
     { href: "/dashboard/configuracion", label: "3. Configuración", icon: Icons.Settings },
     { href: "/dashboard/IA", label: "4. Módulo de IA", icon: Icons.AI },
     { href: "/dashboard/evaluacion", label: "5. Eval. Integral", icon: Icons.Eval },
-    { href: "/dashboard/comparadorv", label: "6. Comparador", icon: Icons.Compare },
+    { href: "/dashboard/predicciones", label: "6. Predicciones", icon: Icons.Chart },
+    { href: "/dashboard/comparadorv", label: "7. Comparador", icon: Icons.Compare },
   ];
 
   return (

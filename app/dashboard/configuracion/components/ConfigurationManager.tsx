@@ -1,6 +1,6 @@
 "use client";
 
-import { saveProfile, updateProfile, deleteProfile } from "@/app/actions/profiles.actions";
+import { deleteProfile, saveProfile, updateProfile } from "@/app/actions/profiles.actions";
 import {
   BusinessProfile,
   BusinessProfileInputSchema,
