@@ -2,8 +2,8 @@
 
 import { apiClient } from "@/app/lib/apiClient";
 import {
-    EvaluacionIntegralResponse,
-    EvaluacionIntegralResponseSchema,
+  EvaluacionIntegralResponse,
+  EvaluacionIntegralResponseSchema,
 } from "@/app/schemas/evaluacion-integral";
 
 export async function getEvaluacionIntegral(
