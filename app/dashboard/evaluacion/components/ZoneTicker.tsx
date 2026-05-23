@@ -6,18 +6,14 @@ import { MapPin, Pause, Play } from "lucide-react";
 import { useRef, useState } from "react";
 
 export function ZoneTicker() {
-  // 1. Extraemos las zonas y el estado de selección directamente del store
   const { zones, selectedZone, setSelectedZone } = useEvaluacionStore();
   
   const [paused, setPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // 2. Creamos el arreglo duplicado para el efecto de scroll infinito
-  // Multiplicamos las zonas para asegurar que cubran todo el ancho de la pantalla
+  // Arreglo duplicado para efecto infinito
   const doubled = [...zones, ...zones, ...zones, ...zones];
 
-  // 3. Manejadores de interacción
-  // Convertimos el valor a string usando String() para que TypeScript y tu store estén felices
   const handleSelect = (zone_code: string | number) => {
     setSelectedZone(String(zone_code)); 
     setPaused(true); 
@@ -25,11 +21,8 @@ export function ZoneTicker() {
 
   const handleResume = () => {
     setPaused(false);
-    // Nota: Si quieres que la zona se deseleccione al reanudar, 
-    // podrías agregar: setSelectedZone(null); aquí.
   };
 
-  // Protección extra: Si no hay zonas (aunque page.tsx ya lo valida), no renderizamos nada
   if (!zones || zones.length === 0) return null;
 
   return (
@@ -46,21 +39,20 @@ export function ZoneTicker() {
 
         {/* Track animado */}
         <div className="flex-1 overflow-hidden relative">
-          {/* Fade izquierdo */}
+          {/* Fades */}
           <div className="absolute left-0 top-0 h-full w-8 bg-gradient-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
-          {/* Fade derecho */}
           <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
 
           <div
             ref={trackRef}
-            className="flex h-full w-max"
+            className="flex h-full w-max transition-none" 
             style={{
               animation: paused ? "none" : "ticker-scroll 35s linear infinite",
+              willChange: "transform",
             }}
           >
             {doubled.map((z, i) => (
               <button
-                // Usamos el index en la key porque los códigos se repiten en el arreglo 'doubled'
                 key={`${z.zone_code}-${i}`}
                 onClick={() => handleSelect(z.zone_code)}
                 className={`flex items-center gap-2.5 px-5 h-full border-r border-zinc-900/60 flex-shrink-0 transition-colors duration-150 cursor-pointer ${
@@ -102,7 +94,7 @@ export function ZoneTicker() {
         </button>
       </div>
 
-      {/* PREVIEW BAR — aparece al seleccionar */}
+      {/* PREVIEW BAR */}
       {paused && selectedZone !== null && (
         <div className="flex items-center gap-4 px-4 py-2 border-t border-zinc-900 bg-zinc-950/80 animate-in slide-in-from-top-1 duration-200 flex-wrap">
           <div>

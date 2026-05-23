@@ -68,3 +68,17 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(113, 113, 122, 0.8); /* zinc-500/80 */
 }
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Forzamos que el contenedor del ticker no tenga transiciones de Tailwind */
+.ticker-container {
+  transition: none !important;
+}
