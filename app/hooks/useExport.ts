@@ -83,7 +83,16 @@ export function useExport() {
   const exportReport = async (datasetId: string) => {
     setIsExporting(true);
     try {
-      // ← ENDPOINT: aquí va la ruta del backend que devuelve el CSV
-      // Cuando el endpoint esté listo reemplaza esta línea con la URL correcta
-      // Ejemplo: /api/v1/export/{datasetId}
-      const { blob
+      // Usamos el blobClient con la ruta del API Gateway
+      const { blob, fileName } = await blobClient(`/api/v1/export/${datasetId}`);
+      await convertCsvToPdfAndDownload(blob, fileName);
+      toast.success("Reporte exportado exitosamente como PDF");
+    } catch (error: any) {
+      toast.error(error.message || "Error al exportar el reporte.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  return { exportReport, isExporting };
+}

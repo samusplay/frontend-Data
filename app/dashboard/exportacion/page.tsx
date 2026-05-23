@@ -70,25 +70,6 @@ export default function ExportacionPage() {
             </p>
           </div>
 
-          {/* Columnas del reporte */}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: "zone_code", desc: "Código de zona" },
-              { label: "score", desc: "Puntaje de oportunidad" },
-              { label: "rank", desc: "Posición en el ranking" },
-              { label: "score_calculated_at", desc: "Fecha del cálculo del score" },
-              { label: "potential_value", desc: "Predicción de IA" },
-              { label: "confidence_score", desc: "Confianza del modelo" },
-              { label: "business_label", desc: "Etiqueta de negocio" },
-              { label: "prediction_generated_at", desc: "Fecha de la predicción" },
-            ].map((col) => (
-              <div key={col.label} className="p-3 bg-zinc-800/50 border border-zinc-700/50 rounded-lg">
-                <p className="text-xs font-mono text-cyan-400">{col.label}</p>
-                <p className="text-xs text-zinc-400 mt-1">{col.desc}</p>
-              </div>
-            ))}
-          </div>
-
           {/* Botón de exportar */}
           <div className="flex justify-end pt-4 border-t border-zinc-800">
             <ExportButton datasetId={datasetId} />

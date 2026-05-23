@@ -1,63 +1,16 @@
 'use client'
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useExport } from '@/app/hooks/useExport';
 
 interface ExportButtonProps {
   datasetId: string;
 }
 
 export default function ExportButton({ datasetId }: ExportButtonProps) {
-  const [isExporting, setIsExporting] = useState(false);
-
-  const handleExport = async () => {
-    setIsExporting(true);
-
-    try {
-      // CA 5: llamada directa al Gateway desde el cliente
-      // porque necesitamos manejar la respuesta binaria (Blob)
-      const today = new Date().toISOString().split('T')[0];
-      const fileName = `Reporte_Analitico_${today}.csv`;
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GATEWAY_URL}/api/v1/export/${datasetId}`
-      );
-
-      // CA 5: si el servidor falla, mostrar mensaje amigable
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const serviceName = errorData?.service || "datos";
-        toast.error(
-          `No se pudo completar la exportación debido a un error en el servicio de ${serviceName}`
-        );
-        return;
-      }
-
-      // CA 5: gestionar respuesta binaria (Blob) y forzar descarga
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName; // CA 5: nombre con fecha del día
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast.success(`Reporte descargado: ${fileName}`);
-
-    } catch (error) {
-      // CA 5: error de red
-      toast.error(
-        "No se pudo completar la exportación debido a un error en el servicio de datos"
-      );
-    } finally {
-      setIsExporting(false);
-    }
-  };
+  const { exportReport, isExporting } = useExport();
 
   return (
     <button
-      onClick={handleExport}
+      onClick={() => exportReport(datasetId)}
       disabled={isExporting}
       className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all
         ${isExporting
