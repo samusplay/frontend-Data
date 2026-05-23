@@ -17,6 +17,8 @@ const STRATEGIES = [
 
 export default function IAPage() {
   const datasetId = useDatasetStore((state) => state.datasetId)
+  // NUEVO: Extraemos la función de ML del store
+  const setMlCompleted = useDatasetStore((state) => state.setMlCompleted)
 
   const [activeResult, setActiveResult] = useState<MLScoringResponse | null>(null)
   const [selectedZone, setSelectedZone] = useState<ZoneMLResult | null>(null)
@@ -35,6 +37,8 @@ export default function IAPage() {
     const res = await executeScoringAction(datasetId, strategy)
     if (res.success && res.data) {
       setActiveResult(res.data)
+      // NUEVO: Si la respuesta fue exitosa, marcamos el ML como completado
+      setMlCompleted(true)
       setSelectedZone(
         [...res.data.data].sort((a, b) => b.potential_score - a.potential_score)[0]
       )

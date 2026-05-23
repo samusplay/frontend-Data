@@ -14,11 +14,11 @@ import ZonasChart from "./components/zonas";
 import ZonasChartsCards from "./components/ZonasCharts";
 import { useIndicators } from "./hooks/useIndicators";
 import { useRanking } from "./hooks/useRanking";
-import ExportButton from './components/ExportButton';
 
 export default function AnalisisPage() {
   // === 1. LEER LA MEMORIA (ZUSTAND) ===
   const datasetId = useDatasetStore((state) => state.datasetId);
+  const setScoringCompleted = useDatasetStore((state) => state.setScoringCompleted);
 
   // === 2. ESTADO DE MONTAJE ===
   const [isMounted, setIsMounted] = useState(false);
@@ -54,6 +54,13 @@ export default function AnalisisPage() {
   // === 5. PREPARACIÓN DE DATOS ===
   const rawRankingData = rankingResponse?.data || [];
   const metricsData = (metricsResponse?.data || []) as any[];
+
+  // NUEVO: Si hay datos en el ranking, marcamos el scoring como completado
+  useEffect(() => {
+    if (rawRankingData.length > 0) {
+      setScoringCompleted(true);
+    }
+  }, [rawRankingData, setScoringCompleted]);
 
   const rankingData = rawRankingData.map((item: any) => {
     const zonaEncontrada = metricsData.find((z: any) =>

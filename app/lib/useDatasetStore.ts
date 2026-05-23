@@ -1,13 +1,20 @@
 import { create } from 'zustand';
 
-//definimos la interfaz
 interface DatasetState {
   datasetId: string | null;
+  scoringCompleted: boolean;
+  mlCompleted: boolean;
   setDatasetId: (id: string | null) => void;
+  // Funciones independientes para actualizar cada estado
+  setScoringCompleted: (status: boolean) => void;
+  setMlCompleted: (status: boolean) => void;
 }
 
-//hook global usando zustand
-export const useDatasetStore=create<DatasetState>((set)=>({
-    datasetId:null,
-    setDatasetId:(id)=>set({datasetId:id}) //actualiza el id
-}))
+export const useDatasetStore = create<DatasetState>((set) => ({
+  datasetId: null,
+  scoringCompleted: false,
+  mlCompleted: false,
+  setDatasetId: (id) => set({ datasetId: id }),
+  setScoringCompleted: (status) => set({ scoringCompleted: status }),
+  setMlCompleted: (status) => set({ mlCompleted: status }),
+}));
