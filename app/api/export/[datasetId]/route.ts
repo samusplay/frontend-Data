@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
-  const { datasetId } = params;
+  const { datasetId } = await params;
   const url = `${GATEWAY_URL}/api/v1/export/${datasetId}`;
 
   try {
