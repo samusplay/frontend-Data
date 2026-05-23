@@ -44,3 +44,8 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(113, 113, 122, 0.8); /* zinc-500/80 */
 }
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
