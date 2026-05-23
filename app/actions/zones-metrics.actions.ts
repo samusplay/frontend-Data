@@ -13,3 +13,4 @@ export async function getZonesWithMetrics(datasetId: string) {
     return { success: false, error: error.message || "Error obteniendo métricas" };
   }
 }
+

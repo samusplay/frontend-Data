@@ -1,6 +1,7 @@
 import QuickInsights from "./components/QuickInsights";
 import QuickLinks from "./components/QuickLinks";
 
+
 export default function DashboardHomePage() {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-4 pb-12 pt-4">
