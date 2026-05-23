@@ -1,5 +1,6 @@
 "use client";
 
+import ThemeToggle from "@/app/components/ThemeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -36,33 +37,39 @@ export default function Sidebar() {
 
   return (
     <aside 
-      className={`bg-zinc-950 border-r border-zinc-800 flex flex-col h-screen sticky top-0 transition-all duration-300 ease-in-out ${
+      className={`bg-zinc-950 border-r border-zinc-800 flex flex-col h-screen sticky top-0 transition-all duration-300 ease-in-out relative ${
         isExpanded ? "w-64 px-6 py-6" : "w-20 px-4 py-6 items-center"
       }`}
     >
-      {/* HEADER Y BOTÓN COLAPSAR */}
-      <div className={`flex w-full items-center mb-8 ${isExpanded ? "justify-between" : "justify-center"}`}>
-        {isExpanded && (
+      {/* BOTÓN COLAPSAR FLOTANTE */}
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="absolute -right-3 top-8 p-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors shadow-lg z-50"
+        title={isExpanded ? "Colapsar menú" : "Expandir menú"}
+      >
+        <svg className={`w-4 h-4 transition-transform duration-300 ${!isExpanded && "rotate-180"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* HEADER */}
+      <div className={`flex w-full items-center mb-8 ${isExpanded ? "justify-start" : "justify-center"}`}>
+        {isExpanded ? (
           <div>
             <h2 className="text-lg font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400 whitespace-nowrap overflow-hidden">
               Analítica Territorial
             </h2>
             <p className="text-[10px] text-zinc-500 mt-0.5 tracking-wider uppercase">v1.0 Core</p>
           </div>
+        ) : (
+          <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
+            <span className="text-blue-400 font-bold text-xs">AT</span>
+          </div>
         )}
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors"
-          title={isExpanded ? "Colapsar menú" : "Expandir menú"}
-        >
-          <svg className={`w-4 h-4 transition-transform duration-300 ${!isExpanded && "rotate-180"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-        </button>
       </div>
 
       {/* NAVEGACIÓN */}
-      <nav className="flex flex-col gap-2 grow w-full">
+      <nav className="flex flex-col gap-2 grow w-full overflow-y-auto custom-scrollbar">
         {navItems.map((item) => {
           const active = isActive(item.href);
           return (
@@ -91,9 +98,19 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* SYSTEM STATUS */}
-      <div className={`mt-auto transition-opacity duration-300 ${!isExpanded && "hidden"}`}>
-        <SystemStatus />
+      {/* ZONA INFERIOR: Theme Toggle + System Status */}
+      <div className={`mt-auto transition-opacity duration-300 flex flex-col gap-4 border-t border-zinc-800 pt-6`}>
+        {isExpanded && (
+          <div className="flex items-center justify-between px-2">
+            <span className="text-xs font-medium text-zinc-500">Tema del UI</span>
+            <div className="relative z-50">
+              <ThemeToggle />
+            </div>
+          </div>
+        )}
+        <div className={!isExpanded ? "hidden" : ""}>
+          <SystemStatus />
+        </div>
       </div>
     </aside>
   );
