@@ -1,0 +1,50 @@
+{"version":8,"type":"context-options","origin":"testRunner","browserName":"","playwrightVersion":"1.60.0","options":{},"platform":"win32","wallTime":1779946843187,"monotonicTime":9131841.661,"sdkLanguage":"javascript"}
+{"type":"before","callId":"hook@1","stepId":"hook@1","startTime":9132197.162,"class":"Test","method":"hook","title":"Before Hooks","params":{},"stack":[]}
+{"type":"before","callId":"hook@2","stepId":"hook@2","parentId":"hook@1","startTime":9132204.189,"class":"Test","method":"hook","title":"beforeEach hook","params":{},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":11,"column":8}]}
+{"type":"before","callId":"fixture@28","stepId":"fixture@28","parentId":"hook@2","startTime":9132331.068,"class":"Test","method":"fixture","title":"Fixture \"browser\"","params":{},"stack":[]}
+{"type":"before","callId":"pw:api@29","stepId":"pw:api@29","parentId":"fixture@28","startTime":9132392.981,"class":"Test","method":"pw:api","title":"Launch browser","params":{"handleSIGINT":"false","tracesDir":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\test-results\\.playwright-artifacts-36\\traces","artifactsDir":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\test-results\\.playwright-artifacts-36","headless":"true","ignoreDefaultArgs":"undefined","ignoreAllDefaultArgs":"false","env":"undefined","timeout":"180000"},"stack":[]}
+{"type":"after","callId":"pw:api@29","endTime":9135086.214,"annotations":[]}
+{"type":"after","callId":"fixture@28","endTime":9135223.781,"annotations":[]}
+{"type":"before","callId":"fixture@32","stepId":"fixture@32","parentId":"hook@2","startTime":9135238.339,"class":"Test","method":"fixture","title":"Fixture \"context\"","params":{},"stack":[]}
+{"type":"before","callId":"pw:api@33","stepId":"pw:api@33","parentId":"fixture@32","startTime":9135258.008,"class":"Test","method":"pw:api","title":"Create context","params":{"recordVideo":"Object","selectorEngines":"[]","testIdAttributeName":"data-testid","acceptDownloads":"accept","bypassCSP":"false","colorScheme":"light","deviceScaleFactor":"1","hasTouch":"false","ignoreHTTPSErrors":"false","isMobile":"false","javaScriptEnabled":"true","locale":"en-US","offline":"false","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.7778.96 Safari/537.36","viewport":"Object","baseURL":"http://localhost:3000","serviceWorkers":"allow","noDefaultViewport":"false","extraHTTPHeaders":"undefined","storageState":"undefined","reducedMotion":"undefined","forcedColors":"undefined","contrast":"undefined","clientCertificates":"undefined"},"stack":[]}
+{"type":"after","callId":"pw:api@33","endTime":9135768.56,"annotations":[]}
+{"type":"after","callId":"fixture@32","endTime":9136123.205,"annotations":[]}
+{"type":"before","callId":"fixture@34","stepId":"fixture@34","parentId":"hook@2","startTime":9136127.923,"class":"Test","method":"fixture","title":"Fixture \"page\"","params":{},"stack":[]}
+{"type":"before","callId":"pw:api@35","stepId":"pw:api@35","parentId":"fixture@34","startTime":9136143.213,"class":"Test","method":"pw:api","title":"Create page","params":{},"stack":[]}
+{"type":"after","callId":"pw:api@35","endTime":9137549.228,"annotations":[]}
+{"type":"after","callId":"fixture@34","endTime":9137550.672,"annotations":[]}
+{"type":"after","callId":"hook@2","endTime":9137552.023,"annotations":[]}
+{"type":"after","callId":"hook@1","endTime":9137554.105,"annotations":[]}
+{"type":"before","callId":"pw:api@36","stepId":"pw:api@36","startTime":9137570.426,"class":"Test","method":"pw:api","title":"Navigate to \"/dashboard\"","params":{"url":"/dashboard","waitUntil":"domcontentloaded","timeout":"90000"},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":65,"column":16}]}
+{"type":"after","callId":"pw:api@36","endTime":9153653.62,"annotations":[]}
+{"type":"before","callId":"expect@37","stepId":"expect@37","startTime":9155305.07,"class":"Test","method":"expect","title":"Expect \"toBeVisible\"","params":{},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":69,"column":28}]}
+{"type":"after","callId":"expect@37","endTime":9179726.712,"annotations":[]}
+{"type":"before","callId":"pw:api@38","stepId":"pw:api@38","startTime":9179751.49,"class":"Test","method":"pw:api","title":"Click locator('a:has-text(\"Eval. Integral\")').first()","params":{"selector":"a:has-text(\"Eval. Integral\") >> nth=0","strict":"true","noWaitAfter":"true","timeout":"30000"},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":72,"column":20}]}
+{"type":"after","callId":"pw:api@38","endTime":9183887.732,"annotations":[]}
+{"type":"before","callId":"pw:api@39","stepId":"pw:api@39","startTime":9184954.532,"class":"Test","method":"pw:api","title":"Wait for navigation","params":{"info":"Object"},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":75,"column":16}]}
+{"type":"after","callId":"pw:api@39","endTime":9224904.215,"annotations":[]}
+{"type":"before","callId":"expect@40","stepId":"expect@40","startTime":9224967.376,"class":"Test","method":"expect","title":"Expect \"toHaveURL\"","params":{"expected":"Object"},"stack":[{"file":"C:\\Users\\JUAN\\Repo_GIT_ProyectoCurso\\data-frontend\\e2e\\happy-path.spec.ts","line":76,"column":24}]}
+{"type":"after","callId":"expect@40","endTime":9227619.179,"annotations":[]}
+{"type":"before","callId":"hook@41","stepId":"hook@41","startTime":9227667.587,"class":"Test","method":"hook","title":"After Hooks","params":{},"stack":[]}
+{"type":"before","callId":"fixture@42","stepId":"fixture@42","parentId":"hook@41","startTime":9227773.069,"class":"Test","method":"fixture","title":"Fixture \"page\"","params":{},"stack":[]}
+{"type":"after","callId":"fixture@42","endTime":9227804.145,"annotations":[]}
+{"type":"before","callId":"fixture@43","stepId":"fixture@43","parentId":"hook@41","startTime":9227827.924,"class":"Test","method":"fixture","title":"Fixture \"context\"","params":{},"stack":[]}
+{"type":"after","callId":"fixture@43","endTime":9239768.342,"annotations":[],"error":{"name":"","message":"\u001b[31mTearing down \"context\" exceeded the test timeout of 120000ms.\u001b[39m","stack":"\u001b[31mTearing down \"context\" exceeded the test timeout of 120000ms.\u001b[39m"}}
+{"type":"before","callId":"fixture@52","stepId":"fixture@52","parentId":"hook@41","startTime":9250779.654,"class":"Test","method":"fixture","title":"Fixture \"baseURL\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@52","endTime":9250780.474,"annotations":[]}
+{"type":"before","callId":"fixture@53","stepId":"fixture@53","parentId":"hook@41","startTime":9250784.51,"class":"Test","method":"fixture","title":"Fixture \"userAgent\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@53","endTime":9250785.998,"annotations":[]}
+{"type":"before","callId":"fixture@55","stepId":"fixture@55","parentId":"hook@41","startTime":9250878.649,"class":"Test","method":"fixture","title":"Fixture \"viewport\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@55","endTime":9250878.94,"annotations":[]}
+{"type":"before","callId":"fixture@62","stepId":"fixture@62","parentId":"hook@41","startTime":9251085.999,"class":"Test","method":"fixture","title":"Fixture \"isMobile\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@62","endTime":9251086.246,"annotations":[]}
+{"type":"before","callId":"fixture@66","stepId":"fixture@66","parentId":"hook@41","startTime":9251093.157,"class":"Test","method":"fixture","title":"Fixture \"hasTouch\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@66","endTime":9251093.425,"annotations":[]}
+{"type":"before","callId":"fixture@68","stepId":"fixture@68","parentId":"hook@41","startTime":9251096.887,"class":"Test","method":"fixture","title":"Fixture \"deviceScaleFactor\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@68","endTime":9251097.102,"annotations":[]}
+{"type":"after","callId":"hook@41","endTime":9251108.781,"annotations":[],"error":{"name":"","message":"\u001b[31mTearing down \"context\" exceeded the test timeout of 120000ms.\u001b[39m","stack":"\u001b[31mTearing down \"context\" exceeded the test timeout of 120000ms.\u001b[39m"}}
+{"type":"before","callId":"hook@74","stepId":"hook@74","startTime":9251113.856,"class":"Test","method":"hook","title":"Worker Cleanup","params":{},"stack":[]}
+{"type":"before","callId":"fixture@77","stepId":"fixture@77","parentId":"hook@74","startTime":9251230.723,"class":"Test","method":"fixture","title":"Fixture \"video\"","params":{},"stack":[{"file":"project#chromium","line":1,"column":1}],"group":"configuration"}
+{"type":"after","callId":"fixture@77","endTime":9251231.354,"annotations":[]}
+{"type":"before","callId":"fixture@78","stepId":"fixture@78","parentId":"hook@74","startTime":9251234.424,"class":"Test","method":"fixture","title":"Fixture \"browser\"","params":{},"stack":[]}
+{"type":"error","message":"Error: browserContext.close: Target page, context or browser has been closed","stack":[]}

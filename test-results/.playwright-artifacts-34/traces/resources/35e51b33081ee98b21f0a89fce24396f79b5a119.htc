@@ -1,0 +1,111 @@
+2:I["(app-pages-browser)/./node_modules/next/dist/next-devtools/userspace/app/segment-explorer-node.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"SegmentViewNode"]
+4:"$Sreact.fragment"
+13:I["(app-pages-browser)/./app/dashboard/components/Sidebar.tsx",["app/dashboard/layout","static/chunks/app/dashboard/layout.js"],"default"]
+17:I["(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+19:I["(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js",["app-pages-internals","static/chunks/app-pages-internals.js"],""]
+33:I["(app-pages-browser)/./app/dashboard/components/QuickInsights.tsx",["app/dashboard/page","static/chunks/app/dashboard/page.js"],"default"]
+45:I["(app-pages-browser)/./node_modules/next/dist/client/app-dir/link.js",["app/dashboard/page","static/chunks/app/dashboard/page.js"],""]
+cd:I["(app-pages-browser)/./node_modules/next/dist/lib/framework/boundary-components.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"OutletBoundary"]
+cf:"$Sreact.suspense"
+dc:I["(app-pages-browser)/./node_modules/next/dist/lib/framework/boundary-components.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"ViewportBoundary"]
+e6:I["(app-pages-browser)/./node_modules/next/dist/lib/framework/boundary-components.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"MetadataBoundary"]
+5:D"$f"
+5:D"$6"
+5:D"$11"
+1b:D"$1d"
+1b:D"$1c"
+1b:D"$1f"
+1b:["$","footer",null,{"className":"mt-auto w-full","children":["$","div",null,{"className":"max-w-7xl mx-auto px-6 py-6 border-t border-zinc-800/50 flex flex-col sm:flex-row items-center justify-between gap-4","children":[["$","p",null,{"className":"text-xs text-zinc-500 font-medium tracking-wide","children":["Â© ",2026," Plataforma de AnalÃ­tica Territorial"]},"$1c","$21",1],["$","div",null,{"className":"flex items-center gap-4 text-xs text-zinc-600 font-mono","children":[["$","span",null,{"children":"v1.0.0"},"$1c","$23",1],["$","span",null,{"className":"w-1 h-1 rounded-full bg-zinc-700"},"$1c","$24",1],["$","span",null,{"children":"Core System"},"$1c","$25",1]]},"$1c","$22",1]]},"$1c","$20",1]},"$1c","$1e",1]
+5:["$","div",null,{"className":"min-h-screen bg-zinc-950 flex flex-col md:flex-row text-white","children":[["$","$L13",null,{},"$6","$12",1],["$","main",null,{"className":"flex-1 p-8 overflow-y-auto w-full flex flex-col","children":[["$","div",null,{"className":"grow","children":["$","$L17",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L19",null,{},null,"$18",1],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined","segmentViewBoundaries":["$undefined","$undefined","$undefined",["$","$L2",null,{"type":"boundary:global-error","pagePath":"__next_builtin__global-error.js"},null,"$1a",1]]},null,"$16",1]},"$6","$15",1],"$1b"]},"$6","$14",1]]},"$6","$10",1]
+28:D"$2c"
+28:D"$29"
+28:D"$2e"
+34:D"$36"
+34:D"$35"
+34:D"$38"
+3b:D"$42"
+3b:D"$3c"
+3b:D"$44"
+47:D"$49"
+47:D"$48"
+47:D"$4b"
+47:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"},"$48","$4c",1]},"$48","$4a",1]
+3b:["$","$L45","0",{"href":"/dashboard/ingesta","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-blue-500/10 text-blue-400 border-blue-500/20","children":"$47"},"$35","$46",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-blue-400","children":"Nueva Ingesta"},"$35","$4d",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Sube archivos estructurados (.csv, .json) para su validaciÃ³n e inserciÃ³n en la base de datos temporal."},"$35","$4e",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$4f",1]]},"$3c","$43",1]
+50:D"$57"
+50:D"$51"
+50:D"$59"
+5b:D"$5d"
+5b:D"$5c"
+5b:D"$5f"
+5b:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"},"$5c","$60",1]},"$5c","$5e",1]
+50:["$","$L45","1",{"href":"/dashboard/analisis","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-cyan-500/10 text-cyan-400 border-cyan-500/20","children":"$5b"},"$35","$5a",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-cyan-400","children":"MÃ³dulo de AnÃ¡lisis"},"$35","$61",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Consulta zonas procesadas, aplica reglas de negocio y transforma datos para el modelo analÃ­tico."},"$35","$62",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$63",1]]},"$51","$58",1]
+64:D"$6b"
+64:D"$65"
+64:D"$6d"
+6f:D"$71"
+6f:D"$70"
+6f:D"$73"
+6f:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":[["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"},"$70","$74",1],["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M15 12a3 3 0 11-6 0 3 3 0 016 0z"},"$70","$75",1]]},"$70","$72",1]
+64:["$","$L45","2",{"href":"/dashboard/configuracion","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-purple-500/10 text-purple-400 border-purple-500/20","children":"$6f"},"$35","$6e",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-purple-400","children":"ConfiguraciÃ³n del Sistema"},"$35","$76",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Ajusta umbrales, parÃ¡metros de anÃ¡lisis y gestiona preferencias generales de la aplicaciÃ³n."},"$35","$77",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$78",1]]},"$65","$6c",1]
+79:D"$80"
+79:D"$7a"
+79:D"$82"
+84:D"$86"
+84:D"$85"
+84:D"$88"
+84:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M13 10V3L4 14h7v7l9-11h-7z"},"$85","$89",1]},"$85","$87",1]
+79:["$","$L45","3",{"href":"/dashboard/IA","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-emerald-500/10 text-emerald-400 border-emerald-500/20","children":"$84"},"$35","$83",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-emerald-400","children":"MÃ³dulo de IA"},"$35","$8a",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Entrena modelos predictivos y evalÃºa el desempeÃ±o algorÃ­tmico sobre los datasets consolidados."},"$35","$8b",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$8c",1]]},"$7a","$81",1]
+8d:D"$94"
+8d:D"$8e"
+8d:D"$96"
+98:D"$9a"
+98:D"$99"
+98:D"$9c"
+98:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"},"$99","$9d",1]},"$99","$9b",1]
+8d:["$","$L45","4",{"href":"/dashboard/evaluacion","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-amber-500/10 text-amber-400 border-amber-500/20","children":"$98"},"$35","$97",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-amber-400","children":"Eval. Integral"},"$35","$9e",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Genera un dictamen completo cruzando variables sociodemogrÃ¡ficas y de competencia en un solo reporte."},"$35","$9f",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$a0",1]]},"$8e","$95",1]
+a1:D"$a7"
+a1:D"$a2"
+a1:D"$a9"
+ab:D"$ad"
+ab:D"$ac"
+ab:D"$af"
+ab:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"},"$ac","$b0",1]},"$ac","$ae",1]
+a1:["$","$L45","5",{"href":"/dashboard/predicciones","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-rose-500/10 text-rose-400 border-rose-500/20","children":"$ab"},"$35","$aa",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-rose-400","children":"Predicciones"},"$35","$b1",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Aplica los modelos de Machine Learning entrenados para inferir la viabilidad comercial de nuevas zonas."},"$35","$b2",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$b3",1]]},"$a2","$a8",1]
+b4:D"$bb"
+b4:D"$b5"
+b4:D"$bd"
+bf:D"$c1"
+bf:D"$c0"
+bf:D"$c3"
+bf:["$","svg",null,{"className":"w-6 h-6","fill":"none","stroke":"currentColor","viewBox":"0 0 24 24","children":["$","path",null,{"strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2","d":"M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"},"$c0","$c4",1]},"$c0","$c2",1]
+b4:["$","$L45","6",{"href":"/dashboard/comparadorv","className":"group block bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 rounded-2xl p-5 transition-all shadow-sm hover:shadow-md flex flex-col h-full","children":[["$","div",null,{"className":"w-12 h-12 rounded-xl flex items-center justify-center border mb-4 transition-colors bg-indigo-500/10 text-indigo-400 border-indigo-500/20","children":"$bf"},"$35","$be",1],["$","h3",null,{"className":"text-base font-bold text-white transition-colors group-hover:text-indigo-400","children":"Comparador Funcional"},"$35","$c5",1],["$","p",null,{"className":"text-xs text-zinc-400 mt-2 leading-relaxed flex-grow","children":"Arena de batalla visual para comparar directamente mÃºltiples zonas frente a frente segÃºn diversas estrategias."},"$35","$c6",1],["$","div",null,{"className":"mt-4 flex items-center text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors","children":"Acceder al mÃ³dulo â†’"},"$35","$c7",1]]},"$b5","$bc",1]
+34:["$","div",null,{"className":"mt-12","children":[["$","h3",null,{"className":"text-lg font-semibold text-zinc-300 mb-6 px-2","children":"Accesos RÃ¡pidos a MÃ³dulos"},"$35","$39",1],["$","div",null,{"className":"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4","children":["$3b","$50","$64","$79","$8d","$a1","$b4"]},"$35","$3a",1]]},"$35","$37",1]
+28:["$","div",null,{"className":"w-full max-w-6xl mx-auto space-y-4 pb-12 pt-4","children":[["$","div",null,{"className":"mb-6 px-2","children":[["$","h1",null,{"className":"text-3xl font-bold text-white","children":"Resumen Operativo"},"$29","$30",1],["$","p",null,{"className":"text-zinc-400 mt-2 text-sm","children":"VisiÃ³n general del estado del sistema y acceso rÃ¡pido a los mÃ³dulos analÃ­ticos."},"$29","$31",1]]},"$29","$2f",1],["$","$L33",null,{},"$29","$32",1],"$34"]},"$29","$2d",1]
+c8:D"$ca"
+c8:D"$c9"
+c8:D"$cc"
+c8:["$","$Lcd",null,{"children":["$","$cf",null,{"name":"Next.MetadataOutlet","children":"$@d0"},"$c9","$ce",1]},"$c9","$cb",1]
+d2:D"$d5"
+d2:D"$d3"
+d2:D"$d6"
+d2:null
+d7:D"$d9"
+d7:D"$d8"
+d7:D"$db"
+dd:D"$df"
+dd:D"$de"
+d7:["$","$Ldc","84e80862v",{"children":"$Ldd"},"$d8","$da",1]
+e0:D"$e2"
+e0:D"$e1"
+e0:D"$e4"
+e8:D"$ea"
+e8:D"$e9"
+e0:["$","div","84e80862m",{"hidden":true,"children":["$","$Le6",null,{"children":["$","$cf",null,{"name":"Next.Metadata","children":"$Le8"},"$e1","$e7",1]},"$e1","$e5",1]},"$e1","$e3",1]
+0:{"f":[["children","dashboard",["dashboard",{"children":["__PAGE__",{}]},"$undefined","$undefined",16],[["$","$L2","layout",{"type":"layout","pagePath":"dashboard/layout.tsx","children":["$","$4","c",{"children":[null,"$5"]},null,"$3",1]},null,"$1",0],{"children":[["$","$4","c",{"children":[["$","$L2","c-page",{"type":"page","pagePath":"dashboard/page.tsx","children":"$28"},null,"$27",1],null,"$c8"]},null,"$26",0],{},null,false,null]},null,false,null],["$","$4","h",{"children":["$d2","$d7","$e0"]},null,"$d1",0],false]],"q":"","i":true,"S":false,"h":null,"b":"development"}
+dd:D"$eb"
+dd:[["$","meta","0",{"charSet":"utf-8"},"$c9","$ec",0],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"},"$c9","$ed",0]]
+f4:I["(app-pages-browser)/./node_modules/next/dist/lib/metadata/generate/icon-mark.js",["app-pages-internals","static/chunks/app-pages-internals.js"],"IconMark"]
+d0:D"$ee"
+d0:null
+e8:D"$ef"
+e8:[["$","title","0",{"children":"Plataforma AnalÃ­tica Territorial"},"$c9","$f0",0],["$","meta","1",{"name":"description","content":"Arquitectura End-to-End con Next.js, API Gateway y Microservicios"},"$c9","$f1",0],["$","link","2",{"rel":"icon","href":"/favicon.ico?603d046c9a6fdfbb","type":"image/x-icon","sizes":"16x16"},"$c9","$f2",0],["$","$Lf4","3",{},"$c9","$f3",0]]

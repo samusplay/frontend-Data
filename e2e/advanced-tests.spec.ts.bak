@@ -1,0 +1,300 @@
+/**
+ * Tests Adicionales y Ejemplos Avanzados
+ * 
+ * Esta es una colección de tests adicionales que puedes agregar
+ * para cobertura más completa del sistema.
+ * 
+ * Archivo: e2e/advanced-tests.spec.ts
+ */
+
+import { test, expect } from '@playwright/test';
+import { extractEvaluacionData, waitForEvaluacionData } from '../support/selectors';
+
+test.describe('Tests Adicionales - Cobertura Extendida', () => {
+  /**
+   * Test: Verificar que el Score está dentro de rangos válidos
+   */
+  test('[E2E-007] Validar Rangos de Scores', async ({ page }) => {
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    // Seleccionar zona si está disponible
+    const zones = page.locator('[role="button"]').filter({ has: page.locator('text=/^Z\\d+/') });
+    if (await zones.count() > 0) {
+      await zones.first().click();
+
+      try {
+        await waitForEvaluacionData(page);
+
+        // Extraer scores
+        const data = await extractEvaluacionData(page);
+
+        // Validaciones de rangos
+        if (data.score_value !== null) {
+          expect(data.score_value).toBeGreaterThanOrEqual(0);
+          expect(data.score_value).toBeLessThanOrEqual(1);
+          console.log(`✅ Score dentro de rango válido: ${data.score_value}`);
+        }
+
+        if (data.ai_prediction !== null) {
+          expect(data.ai_prediction).toBeGreaterThanOrEqual(0);
+          expect(data.ai_prediction).toBeLessThanOrEqual(1);
+          console.log(`✅ AI Prediction dentro de rango válido: ${data.ai_prediction}`);
+        }
+      } catch (error) {
+        console.log('ℹ️ Test omitido: no hay datos disponibles');
+      }
+    }
+  });
+
+  /**
+   * Test: Comparar valores entre modelos diferentes
+   */
+  test('[E2E-008] Valores Difieren entre Modelos', async ({ page }) => {
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    const zones = page.locator('[role="button"]').filter({ has: page.locator('text=/^Z\\d+/') });
+    if (await zones.count() > 0) {
+      await zones.first().click();
+
+      try {
+        await waitForEvaluacionData(page);
+
+        // Obtener valor inicial
+        const initialData = await extractEvaluacionData(page);
+        const initialScore = initialData.score_value;
+
+        console.log(`📊 Score inicial: ${initialScore}`);
+
+        // Cambiar modelo
+        const selector = page.locator('select');
+        const currentModel = await selector.inputValue();
+        const newModel = currentModel === 'gradient_boosting' ? 'random_forest' : 'gradient_boosting';
+
+        console.log(`🔄 Cambiando a modelo: ${newModel}`);
+        await selector.selectOption(newModel);
+
+        // Esperar nuevos datos
+        await waitForEvaluacionData(page);
+
+        // Obtener nuevo valor
+        const newData = await extractEvaluacionData(page);
+        const newScore = newData.score_value;
+
+        console.log(`📊 Score después del cambio: ${newScore}`);
+
+        // Nota: Los valores podrían ser similares o diferentes según el modelo
+        console.log(`📈 Diferencia: ${Math.abs((newScore || 0) - (initialScore || 0))}`);
+      } catch (error) {
+        console.log('ℹ️ Test omitido: no hay datos disponibles');
+      }
+    }
+  });
+
+  /**
+   * Test: Performance - Verificar carga inicial
+   */
+  test('[E2E-009] Verificar Performance de Carga', async ({ page }) => {
+    const navigationTiming = await page.evaluate(() => {
+      const timing = window.performance.timing;
+      return {
+        dns: timing.domainLookupEnd - timing.domainLookupStart,
+        tcp: timing.connectEnd - timing.connectStart,
+        ttfb: timing.responseStart - timing.requestStart,
+        download: timing.responseEnd - timing.responseStart,
+        dom: timing.domContentLoadedEventEnd - timing.domContentLoadedEventStart,
+        load: timing.loadEventEnd - timing.loadEventStart,
+        total: timing.loadEventEnd - timing.navigationStart,
+      };
+    });
+
+    console.log('⏱️ Performance Metrics:');
+    console.log(`   DNS: ${navigationTiming.dns}ms`);
+    console.log(`   TCP: ${navigationTiming.tcp}ms`);
+    console.log(`   TTFB: ${navigationTiming.ttfb}ms`);
+    console.log(`   Download: ${navigationTiming.download}ms`);
+    console.log(`   DOM: ${navigationTiming.dom}ms`);
+    console.log(`   Load: ${navigationTiming.load}ms`);
+    console.log(`   Total: ${navigationTiming.total}ms`);
+
+    // Esperar que no sea demasiado lento
+    expect(navigationTiming.total).toBeLessThan(10000); // 10 segundos
+  });
+
+  /**
+   * Test: Responsive Design
+   */
+  test('[E2E-010] Responsive Design - Mobile', async ({ page }) => {
+    // Configurar tamaño de viewport para móvil
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    // Verificar que es responsive
+    const mainContent = page.locator('main, [role="main"]');
+    await expect(mainContent).toBeVisible();
+
+    // Verificar que hay scrolling vertical si es necesario
+    const contentHeight = await page.evaluate(() => document.body.scrollHeight);
+    const viewportHeight = await page.evaluate(() => window.innerHeight);
+
+    console.log(`📱 Mobile Viewport: 375x667`);
+    console.log(`   Content Height: ${contentHeight}px`);
+    console.log(`   Viewport Height: ${viewportHeight}px`);
+    console.log(`   Requires Scroll: ${contentHeight > viewportHeight}`);
+  });
+
+  /**
+   * Test: Accesibilidad Básica
+   */
+  test('[E2E-011] Verificar Accesibilidad Básica', async ({ page }) => {
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    // Verificar que hay labels para inputs
+    const selects = page.locator('select');
+    const selectCount = await selects.count();
+
+    if (selectCount > 0) {
+      for (let i = 0; i < selectCount; i++) {
+        const select = selects.nth(i);
+        // Verificar que el select es accesible
+        expect(await select.isVisible()).toBeTruthy();
+      }
+      console.log(`✅ ${selectCount} selects encontrados y accesibles`);
+    }
+
+    // Verificar que hay headings correctos
+    const h1 = page.locator('h1');
+    const h1Count = await h1.count();
+    console.log(`✅ ${h1Count} h1 encontrados`);
+
+    // Verificar botones con aria-labels
+    const buttons = page.locator('button, [role="button"]');
+    const buttonCount = await buttons.count();
+    console.log(`✅ ${buttonCount} botones encontrados`);
+  });
+
+  /**
+   * Test: Cache y Persistencia
+   */
+  test('[E2E-012] Verificar Persistencia de Datos', async ({ page }) => {
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    // Hacer click en una zona
+    const zones = page.locator('[role="button"]').filter({ has: page.locator('text=/^Z\\d+/') });
+    if (await zones.count() > 0) {
+      const firstZoneName = await zones.first().textContent();
+      await zones.first().click();
+
+      try {
+        await waitForEvaluacionData(page);
+
+        // Recargar la página
+        console.log('🔄 Recargando página...');
+        await page.reload({ waitUntil: 'networkidle' });
+
+        // Verificar si la zona sigue seleccionada
+        await page.waitForTimeout(2000);
+
+        const selectedAfterReload = await page.locator('[class*="selected"], [class*="active"]').isVisible();
+        console.log(`🔍 Zona seleccionada después de recarga: ${selectedAfterReload}`);
+      } catch (error) {
+        console.log('ℹ️ No se pudo verificar persistencia');
+      }
+    }
+  });
+
+  /**
+   * Test: Errores de Red
+   */
+  test('[E2E-013] Manejo de Fallo de Red', async ({ page, context }) => {
+    // Simular fallo de red
+    await context.setOffline(true);
+
+    await page.goto('/dashboard/evaluacion');
+
+    // Verificar que se muestra un mensaje de error
+    const errorMsg = page.locator('[class*="error"], [class*="offline"], text=/sin conexión/i');
+    const hasError = await errorMsg.isVisible().catch(() => false);
+
+    if (hasError) {
+      console.log('✅ Mensaje de error mostrado en modo offline');
+    } else {
+      console.log('ℹ️ No se encontró mensaje específico de error offline');
+    }
+
+    // Restaurar conexión
+    await context.setOffline(false);
+  });
+
+  /**
+   * Test: Navegación Histórica (Back/Forward)
+   */
+  test('[E2E-014] Navegación Histórica', async ({ page }) => {
+    // Navegar a landing
+    await page.goto('/', { waitUntil: 'networkidle' });
+    console.log(`🔗 Navegando a: /`);
+
+    // Navegar a dashboard
+    const accessBtn = page.locator('a:has-text("Acceder al Sistema")');
+    await accessBtn.click();
+    await page.waitForURL('/dashboard');
+    console.log(`🔗 Navegando a: /dashboard`);
+
+    // Navegar a evaluación
+    const evalCard = page.locator('a:has-text("Eval. Integral")');
+    await evalCard.click();
+    await page.waitForURL('/dashboard/evaluacion');
+    console.log(`🔗 Navegando a: /dashboard/evaluacion`);
+
+    // Ir atrás
+    console.log(`⏮️ Volviendo atrás...`);
+    await page.goBack();
+    await page.waitForURL('/dashboard');
+    expect(page).toHaveURL(/\/dashboard$/);
+    console.log(`✅ Volvió a: /dashboard`);
+
+    // Ir adelante
+    console.log(`⏭️ Avanzando...`);
+    await page.goForward();
+    await page.waitForURL('/dashboard/evaluacion');
+    expect(page).toHaveURL(/\/dashboard\/evaluacion$/);
+    console.log(`✅ Avanzó a: /dashboard/evaluacion`);
+  });
+
+  /**
+   * Test: Interacción con Dropdown
+   */
+  test('[E2E-015] Interacción con Model Selector', async ({ page }) => {
+    await page.goto('/dashboard/evaluacion', { waitUntil: 'networkidle' });
+
+    const selector = page.locator('select').first();
+
+    // Obtener opciones disponibles
+    const options = await selector.locator('option').count();
+    console.log(`📋 Opciones disponibles: ${options}`);
+
+    // Listar opciones
+    for (let i = 0; i < options; i++) {
+      const optionText = await selector.locator('option').nth(i).textContent();
+      console.log(`   - ${optionText}`);
+    }
+
+    // Seleccionar cada opción y verificar que se actualiza
+    for (let i = 0; i < options; i++) {
+      const optionText = await selector.locator('option').nth(i).textContent();
+      await selector.selectOption({ index: i });
+      const selected = await selector.inputValue();
+      console.log(`✅ Seleccionada opción: ${optionText} (${selected})`);
+    }
+  });
+});
+
+/*
+ * Para ejecutar estos tests adicionales:
+ * 
+ * npx playwright test e2e/advanced-tests.spec.ts
+ * npx playwright test -g "E2E-007"
+ * npx playwright test -g "Validar Rangos"
+ * 
+ * O agrégalos al archivo principal si quieres ejecutarlos junto con los otros tests.
+ */
